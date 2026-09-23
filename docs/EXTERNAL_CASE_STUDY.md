@@ -17,7 +17,7 @@ The official dataset and raw/derived row-level matrices are **not** part of the 
 
 ## Results (recorded after the frozen run)
 
-The plan was committed as `3283511` and the implementation as `67aa6a6` **before** the official archive was downloaded. Its SHA-256 is `252e0a78333c108d0ea54537b61154aa781e95a15675e65ddf9b76993617191d`. Archived run manifests are `docs/run_manifests/magic_external_{test,null}_v1.json` (local runs also have a `manifest.json`); aggregate CSVs are `results/frozen/analysis/magic_external_{real,null}.csv`. All **480** detection and **2,400** null trials completed with no evaluation errors or budget violations. The evaluation pool contains 10,000 rows; model training used the separate 9,020 rows.
+The plan was committed as `fb31b35` and the implementation as `e469fdc` **before** the official archive was downloaded. Its SHA-256 is `252e0a78333c108d0ea54537b61154aa781e95a15675e65ddf9b76993617191d`. Archived run manifests are `docs/run_manifests/magic_external_{test,null}_v1.json` (local runs also have a `manifest.json`); aggregate CSVs are `results/frozen/analysis/magic_external_{real,null}.csv`. All **480** detection and **2,400** null trials completed with no evaluation errors or budget violations. The evaluation pool contains 10,000 rows; model training used the separate 9,020 rows.
 
 | Fixed pair | True pool Δ | B200 confirmations (B1 / B8 / IPW uniform / OURS2), each of 20 | B500 confirmations, each of 20 |
 |---|---:|---:|---:|

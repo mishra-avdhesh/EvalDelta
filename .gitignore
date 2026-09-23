@@ -25,3 +25,6 @@ benchmarks/data/cifar10_partial/
 
 # Generated example tables; the CI workflow builds these on demand.
 examples/ci_demo/*.parquet
+
+# Local private checkout and history backups.
+private_archive/
