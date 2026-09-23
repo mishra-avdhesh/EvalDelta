@@ -1,0 +1,8 @@
+LICENSE PENDING: AUTHOR CHOICE REQUIRED
+
+The project owner has not yet chosen a license. Until one is chosen, no license is granted.
+Suggested options: Apache-2.0 (patent grant, common for ML tooling) or MIT.
+
+Before release (M7), replace this file with the full license text and update
+`project.license` in pyproject.toml. Third-party datasets and model checkpoints used by
+DeltaBench have their own licenses. See docs/BENCHMARK_CARD.md.

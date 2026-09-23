@@ -1,0 +1,42 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: pip install -e '.[dev]'
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: mypy src/evaldelta
+      - run: pytest -q -m "not slow"
+      - name: CLI smoke test
+        run: |
+          evaldelta demo --scenario slice-regression --budget 100 --seed 42 --output runs/ci || test $? -le 3
+          test -f runs/ci/report.json
+  wheel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install build && python -m build
+      - name: Install wheel in a clean venv (no CUDA, no dev extras)
+        run: |
+          python -m venv /tmp/clean && /tmp/clean/bin/pip install dist/*.whl
+          /tmp/clean/bin/evaldelta demo --budget 60 --n-items 2000 --output /tmp/run || test $? -le 3

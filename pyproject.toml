@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "evaldelta"
+version = "0.1.0"
+description = "Budget-constrained, statistically valid paired regression testing for ML model versions."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "LicenseRef-Pending (see LICENSE)" }
+authors = [{ name = "EvalDelta contributors" }]
+keywords = ["evaluation", "regression-testing", "active-testing", "statistics", "mlops"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+  "numpy>=1.26",
+  "scipy>=1.11",
+  "pandas>=2.1",
+  "pyarrow>=14",
+  "pydantic>=2.5",
+  "typer>=0.12",
+  "rich>=13",
+  "scikit-learn>=1.4",
+  "pyyaml>=6",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "hypothesis>=6.100", "ruff>=0.5", "mypy>=1.10", "pandas-stubs", "types-PyYAML", "build"]
+plots = ["matplotlib>=3.8"]
+vision = ["torch>=2.2", "torchvision>=0.17"]
+demo = ["gradio>=4.0", "matplotlib>=3.8"]
+mlflow = ["mlflow>=2.10"]
+
+[project.scripts]
+evaldelta = "evaldelta.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/evaldelta"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = [".venv", "results", "*.md"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "NPY"]
+ignore = ["B008", "E501"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unused_ignores = true
+ignore_missing_imports = true
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+markers = ["slow: long statistical simulations (deselect with -m 'not slow')"]
