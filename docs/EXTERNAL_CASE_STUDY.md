@@ -1,0 +1,18 @@
+# Independent-source case study: MAGIC Gamma Telescope
+
+## Frozen plan (recorded before downloading or inspecting source outcomes)
+
+This is an **exploratory external-source robustness check**, separate from the v1/v2 DeltaBench claims. The source is [UCI MAGIC Gamma Telescope](https://archive.ics.uci.edu/dataset/159/magic+gamma+telescope), 19,020 Monte Carlo simulated particle events with 10 numeric features and binary labels, licensed CC BY 4.0. It is a new task and dataset for this project, but its simulated events are not production observations. The model's existing four-source historical training and `configs/frozen.yaml` are not modified. This plan is fixed before downloading the dataset or viewing candidate outcomes. Do not treat this as an additional independent pre-registered confirmation of v1/v2, whose results were already seen.
+
+- Deterministic split: NumPy `default_rng(20260923).permutation(N)`; first 10,000 rows form the evaluation pool, remaining rows train the versions. No evaluation-pool label is used to fit models or choose settings. All versions use the same train/pool split.
+- Release ladder: `v01` StandardScaler + LogisticRegression (`C=1`, `max_iter=1000`); `v02` HistGradientBoosting (`max_iter=100`, `max_leaf_nodes=31`, `random_state=0`); `v03` compressed HistGradientBoosting (`max_iter=50`, `max_leaf_nodes=7`, `random_state=0`); `v04` `v02` architecture trained and evaluated without the **first raw feature** (`fLength`). Fixed pairs: `v01→v02`, `v02→v03`, `v02→v04`. No pair is discarded based on direction or difficulty.
+- Paired 0/1 loss; positive new-minus-old loss means regression. A pre-existing candidate outcome is stored only in the replay oracle; selectors see old outcome, permitted historical outcomes from versions preceding the candidate, and public metadata. Use the repository's leakage and budget checks.
+- Global comparison: budgets 200 and 500 paid candidate calls, 20 deterministic replay seeds per pair/method/budget. Methods: B1 fixed exact McNemar (one look, i.i.d. superpopulation assumption), B8 sequential finite-pool betting, adaptive IPW uniform, and frozen `OURS2_paired_shift_ipw`. Settings and historical model are the current four-source freeze, never tuned on MAGIC. Main descriptive quantity: confirmed-regression frequency on pairs with true pool Δ > 0, plus paid calls. Show each pair separately; do not bootstrap a confidence interval across one source family.
+- Boundary-null check: at budgets 200 and 500, B8 and OURS2 each get 200 deterministic replay seeds per pair, with regression margin set to `max(0, true pool Δ)` as in `phase_nullreal`. This margin is for calibration scoring only, not the primary detection comparison. Report numerator/denominator per method and budget; repeated seeds of the same pair are Monte Carlo replicates, not independent external datasets.
+- The run records source, code, model and frozen-config hashes before replay and refuses to overwrite outputs. If no pair has positive Δ, report the external check as non-informative for detection power. Observed null alarms are descriptive; values below 5% do not prove a general type-I guarantee.
+
+The official dataset and raw/derived row-level matrices are **not** part of the code release. Users regenerate them using `benchmarks/prepare_magic.py`, then run `benchmarks/run_magic_case_study.py`. Aggregate findings and limitations will be appended below only after the frozen plan has a Git commit predating first access to the new source outcomes.
+
+## Results
+
+Pending the frozen run. Do not fill this section from validation or v1/v2 data.
