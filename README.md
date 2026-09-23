@@ -1,62 +1,47 @@
 # EvalDelta
 
-Budget-constrained, statistically valid **paired regression testing** for ML model versions.
+EvalDelta checks whether a new model version performs worse than the version it replaces. It compares both versions on the same items, counts each candidate evaluation against a fixed budget, and keeps exploratory item selection separate from the data used for a statistical decision.
 
-EvalDelta compares an old (production) and a new (candidate) model/prompt/pipeline on the same
-items under a fixed evaluation budget, then reports one of four decisions: `confirmed_regression`,
-`evidence_of_noninferiority`, `inconclusive` (never a pass), or `evaluation_error`.
+A run ends with `confirmed_regression`, `evidence_of_noninferiority`, `inconclusive`, or `evaluation_error`. Inconclusive is not approval to deploy. The default installation runs on CPU and needs no model API.
 
-> **Status: v0.1.0 pre-release.** The statistical core, replay engine, benchmark, CLI, GitHub
-> Action and Gradio demo are implemented and tested (`pytest`: 144 passed; `ruff`/`mypy --strict`:
-> clean). Held-out results are in **[docs/RESULTS.md](docs/RESULTS.md)** — read it before quoting
-> any number from this project. Revision 2 (4 real source families, up from 3) is the current
-> honest summary: observed null false-alarm rates in these benchmark scenarios were
-> at most ~2.4% against a 5% target, subject to the protocol assumptions; the adaptive global method's apparent efficiency gain
-> **more than halved** when a 4th dataset was added and its confidence intervals cross zero, so it
-> should not be advertised as a validated win; it does not transfer to a held-out model family;
-> and the PairedShift slice-triage heuristic does not beat plain random sampling in either
-> revision.
-
-## 30-second demo (CPU only)
+## Try it
 
 ```bash
-pip install -e '.[dev]'
+pip install -e .
 evaldelta demo --scenario slice-regression --budget 100 --seed 42
 ```
 
-This replays a deterministic synthetic episode. It writes `report.json`, `events.jsonl` and
-`report.md`, and exits 0 (non-inferiority evidence), 2 (confirmed regression), 3 (inconclusive) or
-4 (evaluation error). See [examples/ci_demo](examples/ci_demo) for a live, free (no API key)
-worked example wired into a GitHub Action via [action.yml](action.yml), and
-[apps/hf_space](apps/hf_space) for the CPU-only Gradio demo.
+The demo generates a synthetic episode and writes a JSON report, an event log, and a readable report under `runs/`. The command returns exit code 2 for a confirmed regression, 3 for an inconclusive result, 0 for evidence of non-inferiority, and 4 for an evaluation error.
 
-## Documents
+For an example that calls a candidate Python function:
 
-| | |
-|---|---|
-| [docs/STATISTICAL_PROTOCOL.md](docs/STATISTICAL_PROTOCOL.md) | Exact estimand, hypotheses, tests and validity arguments |
-| [docs/NOVELTY_AUDIT.md](docs/NOVELTY_AUDIT.md) | Related-work matrix and scope boundary |
-| [docs/RESULTS.md](docs/RESULTS.md) | Held-out experimental results (honest, incl. negative results) |
-| [docs/BENCHMARK_CARD.md](docs/BENCHMARK_CARD.md) | DeltaBench sources, splits and licensing |
-| [docs/CALIBRATION.md](docs/CALIBRATION.md) | Synthetic null-calibration simulation report |
-| [docs/REPRODUCE.md](docs/REPRODUCE.md) | Commands to regenerate every result and figure |
-| [docs/API.md](docs/API.md) | Python API reference |
-| [docs/COMPUTE_LOG.md](docs/COMPUTE_LOG.md) | GPU-hour accounting against the 10-hour budget |
-| [docs/EXTERNAL_CASE_STUDY.md](docs/EXTERNAL_CASE_STUDY.md) | Separately predeclared sixth-source check; mixed result, no efficiency claim |
-| [docs/SPACE_DEPLOY.md](docs/SPACE_DEPLOY.md) | Build a data-free Gradio Space bundle and deploy it from your account |
-| [docs/DEMO_WALKTHROUGH.md](docs/DEMO_WALKTHROUGH.md) | Two-minute recruiter demo script |
-| [docs/PUBLISH.md](docs/PUBLISH.md) | Owner commands for GitHub and separate Space publication |
-
-## Architecture
-
-```
-old system + candidate --> sealed 60/20/20 discovery/global-confirm/slice-confirm split
-  --> discovery policy (bounded budget, no hidden-outcome access)
-  --> predeclared confirmation test (exact McNemar / betting confidence sequence)
-  --> report.json / report.html: confirmed_regression | evidence_of_noninferiority | inconclusive
+```bash
+python examples/ci_demo/make_demo_data.py
+evaldelta compare --config examples/ci_demo/evaldelta.yaml --output runs/ci-demo
 ```
 
-## License
+The script creates its synthetic tables locally. The [example workflow](.github/workflows/example_regression.yml) generates the same tables before running the [GitHub Action](action.yml). None of the tables are stored in Git.
 
-Apache-2.0 for the code (see [LICENSE](LICENSE)). This does **not** cover third-party datasets or
-model checkpoints used by DeltaBench — see [docs/BENCHMARK_CARD.md](docs/BENCHMARK_CARD.md).
+## Method
+
+EvalDelta fixes a discovery pool and separate random confirmation pools before querying candidate outcomes. A policy can inspect old-version results and the candidate outcomes it has paid for; it cannot inspect unqueried outcomes. Confirmation uses fresh items and a predeclared test. Each attempted candidate call, including retries, is charged to the budget. See the [statistical protocol](docs/STATISTICAL_PROTOCOL.md) for assumptions and decision rules.
+
+The package includes uniform and stratified selection, a historical-signal heuristic (`PairedShift`), exact paired tests, and finite-population betting confidence sequences. A propensity-weighted adaptive global method is available for research use, but its efficiency advantage is unconfirmed.
+
+## What the experiments found
+
+The four-source benchmark and CIFAR-10 transfer study contain 153,540 replay trials. In the tested boundary-null settings, observed false-alarm rates ranged from 0.04% to 2.35% across methods and budgets, below the 5% target. Repeated seeds of the same version pair are not independent datasets.
+
+At a budget of 500 candidate calls, the adaptive global method confirmed 42.7% of tested regressions versus 40.2% for fixed-sample McNemar. The source-level 95% interval for the difference was −7.3 to +14.0 percentage points, so this is not evidence of an efficiency gain. `PairedShift` slice discovery did not outperform uniform or stratified selection. A separate, predeclared [MAGIC Gamma Telescope case study](docs/EXTERNAL_CASE_STUDY.md) gave mixed results.
+
+Read the [results](docs/RESULTS.md) for denominators, settings, plots, and limitations. The [benchmark card](docs/BENCHMARK_CARD.md) identifies the source datasets and version pairs; [reproduction steps](docs/REPRODUCE.md) show how to rebuild the experiments.
+
+## Repository contents
+
+- `src/evaldelta/`: replay engine, policies, tests, providers, reports, and CLI.
+- `benchmarks/`: scripts to prepare source data and run the experiments.
+- `tests/`: statistical, budget, leakage, integration, and unit checks.
+- `results/frozen/analysis/` and `docs/figures/`: aggregate outputs and plots. The [run manifests](docs/run_manifests/) record settings and file hashes.
+- `apps/hf_space/`: an optional [CPU-only offline replay demo](docs/SPACE_DEPLOY.md).
+
+Raw source data, model checkpoints, item-level prediction matrices, and trial-level records are not included. The example tables are generated when needed. Dataset and checkpoint terms remain with their original publishers; the [Apache-2.0 license](LICENSE) covers this repository's code.

@@ -2,15 +2,15 @@
 
 ## Environment
 
-Use Python 3.11 or 3.12. `pip install -e '.[dev,plots]'` is CPU-only. The frozen policy is in `configs/frozen.yaml`; its model hash is checked before held-out runs. The revision-1 frozen settings were committed in `bced7e4` before access to held-out outcomes; the revision-2 re-freeze is evidenced by timestamps and run manifests only (see `docs/RESULTS.md` §5b). Repeated seeds are Monte Carlo replicates of a version pair, not independent real datasets.
+Use Python 3.11 or 3.12. `pip install -e '.[dev,plots]'` is CPU-only. The frozen policy is in `configs/frozen.yaml`; its model hash is checked before held-out runs. The revision-1 frozen settings were committed in `f2c0067` before access to held-out outcomes; the revision-2 re-freeze was recorded in file timestamps and run manifests before the rerun, then committed afterward (see `docs/RESULTS.md` §5b). Repeated seeds are Monte Carlo replicates of a version pair, not independent real datasets.
 
 ## Data generation
 
-`python benchmarks/prepare_real.py --sources covtype adult agnews bank` rebuilds the CPU matrices from upstream data (all four are free/public: UCI/OpenML and a Hugging Face parquet mirror). This may download data and takes longer than the default tests. The CIFAR-10 checkpoint cache is optional: `python benchmarks/prepare_vision.py --require-cuda`. Current partial cache covers v01–v11; `--through v11` assembles that labelled subset when later checkpoints are unavailable (checkpoints v12+ are blocked on a slow/corrupt upstream GitHub release download — see `docs/COMPUTE_LOG.md`). The research replay itself is CPU-only.
+`python benchmarks/prepare_real.py --sources covtype adult agnews bank` rebuilds the CPU matrices from upstream data (from UCI/OpenML and a Hugging Face parquet mirror; check each source's terms before downloading or redistributing). This may download data and takes longer than the default tests. The CIFAR-10 checkpoint cache is optional: `python benchmarks/prepare_vision.py --require-cuda`. Current partial cache covers v01–v11; `--through v11` assembles that labelled subset when later checkpoints are unavailable (checkpoints v12+ are blocked on a slow/corrupt upstream GitHub release download — see `docs/COMPUTE_LOG.md`). The research replay itself is CPU-only.
 
 ## Validation and frozen tests (revision 2: 4 source families)
 
-Local validation artifacts are in `results/frozen/validate/` and `validate2/` (the prior 3-source revision-1 files are retained only in this working environment; the v1 freeze itself is in commit `bced7e4`). Row-level trial files are excluded from the public Git repository. Archived run manifests are in `docs/run_manifests/`, and the aggregate published tables are in `results/frozen/analysis/`. They were used to select settings. Do not retune the policy from held-out artifacts. The frozen CPU experiment was run with:
+When generated locally, validation artifacts are in `results/frozen/validate/` and `validate2/` (the prior 3-source revision-1 files are retained only in this working environment; the v1 freeze itself is in commit `f2c0067`). Row-level trial files are excluded from the public Git repository. Archived run manifests are in `docs/run_manifests/`, and the aggregate published tables are in `results/frozen/analysis/`. They were used to select settings. Do not retune the policy from held-out artifacts. The frozen CPU experiment was run with:
 
 ```bash
 python benchmarks/prepare_real.py --sources bank                          # 4th source family
@@ -34,7 +34,7 @@ Compare methods at the same maximum paid-call budget and report actual calls spe
 
 ## Separate MAGIC external-source check
 
-The sixth dataset has a [precommitted protocol](EXTERNAL_CASE_STUDY.md) and is **not** pooled into DeltaBench v2. Its source is UCI MAGIC Gamma Telescope (CC BY 4.0); the data are Monte Carlo simulated physics events. The download and row-level outcome matrix remain local. The plan commit `2367647` and implementation commit `55d2d16` predate the first download. Reproduce with:
+The sixth dataset has a [precommitted protocol](EXTERNAL_CASE_STUDY.md) and is **not** pooled into DeltaBench v2. Its source is UCI MAGIC Gamma Telescope (CC BY 4.0); the data are Monte Carlo simulated physics events. The download and row-level outcome matrix remain local. The plan commit `3283511` and implementation commit `67aa6a6` predate the first download. Reproduce with:
 
 ```bash
 python benchmarks/prepare_magic.py

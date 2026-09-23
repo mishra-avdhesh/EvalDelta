@@ -28,7 +28,7 @@ Real version changes are evaluated without injection. Additional controlled `nul
 
 ## Licensing and distribution
 
-The EvalDelta **code** uses Apache-2.0. That license does not grant rights to upstream datasets or model checkpoints. The repository does not redistribute raw Adult, AG News, CIFAR-10 or model checkpoint files. Derived per-item prediction matrices require an owner review of each upstream source's redistribution terms before publication; they are excluded from Git. The Git release includes source inventories and aggregate result tables, with attribution. The `benchmarks/data/raw/` directory is ignored by Git. A small fully synthetic example may be redistributed without those third-party questions.
+The EvalDelta **code** uses Apache-2.0. That license does not grant rights to upstream datasets or model checkpoints. The repository does not redistribute raw Adult, AG News, CIFAR-10 or model checkpoint files. Derived per-item prediction matrices require an owner review of each upstream source's redistribution terms before publication; they are excluded from Git. The Git release includes source inventories and aggregate result tables, with attribution. The `benchmarks/data/raw/` directory is ignored by Git. The small CI example generates synthetic tables locally; no example table is stored in Git.
 
 ## Measurement limits
 

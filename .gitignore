@@ -22,3 +22,6 @@ benchmarks/data/raw/
 
 .venv-gpu/
 benchmarks/data/cifar10_partial/
+
+# Generated example tables; the CI workflow builds these on demand.
+examples/ci_demo/*.parquet
