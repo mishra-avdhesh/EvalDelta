@@ -1,0 +1,206 @@
+[
+  {
+    "budget": 200,
+    "method": "OURS2_paired_shift_ipw",
+    "baseline": "B1_fixed_mcnemar",
+    "split": "test",
+    "sources": 4,
+    "pairs": 24,
+    "trials": 480,
+    "difference": -0.029166666666666667,
+    "source_bootstrap_95": [
+      -0.1,
+      0.048
+    ],
+    "by_source": {
+      "adult": -0.025,
+      "agnews": -0.09285714285714286,
+      "bank": 0.07857142857142857,
+      "covtype": -0.1125
+    }
+  },
+  {
+    "budget": 200,
+    "method": "B6_active_testing_ipw",
+    "baseline": "B1_fixed_mcnemar",
+    "split": "test",
+    "sources": 4,
+    "pairs": 24,
+    "trials": 480,
+    "difference": -0.03125,
+    "source_bootstrap_95": [
+      -0.08888888888888889,
+      0.044444444444444446
+    ],
+    "by_source": {
+      "adult": -0.05,
+      "agnews": 0.07142857142857142,
+      "bank": -0.1,
+      "covtype": -0.0625
+    }
+  },
+  {
+    "budget": 200,
+    "method": "IPW_uniform",
+    "baseline": "B1_fixed_mcnemar",
+    "split": "test",
+    "sources": 4,
+    "pairs": 24,
+    "trials": 480,
+    "difference": -0.05,
+    "source_bootstrap_95": [
+      -0.09210526315789473,
+      -0.026
+    ],
+    "by_source": {
+      "adult": -0.016666666666666666,
+      "agnews": -0.03571428571428571,
+      "bank": -0.05,
+      "covtype": -0.125
+    }
+  },
+  {
+    "budget": 500,
+    "method": "OURS2_paired_shift_ipw",
+    "baseline": "B1_fixed_mcnemar",
+    "split": "test",
+    "sources": 4,
+    "pairs": 24,
+    "trials": 480,
+    "difference": 0.025,
+    "source_bootstrap_95": [
+      -0.07321428571428572,
+      0.14
+    ],
+    "by_source": {
+      "adult": 0.175,
+      "agnews": -0.11428571428571428,
+      "bank": 0.05,
+      "covtype": 0.0
+    }
+  },
+  {
+    "budget": 500,
+    "method": "B6_active_testing_ipw",
+    "baseline": "B1_fixed_mcnemar",
+    "split": "test",
+    "sources": 4,
+    "pairs": 24,
+    "trials": 480,
+    "difference": 0.041666666666666664,
+    "source_bootstrap_95": [
+      -0.01818181818181818,
+      0.09230769230769231
+    ],
+    "by_source": {
+      "adult": 0.06666666666666667,
+      "agnews": 0.11428571428571428,
+      "bank": -0.007142857142857143,
+      "covtype": -0.0375
+    }
+  },
+  {
+    "budget": 500,
+    "method": "IPW_uniform",
+    "baseline": "B1_fixed_mcnemar",
+    "split": "test",
+    "sources": 4,
+    "pairs": 24,
+    "trials": 480,
+    "difference": -0.075,
+    "source_bootstrap_95": [
+      -0.13636363636363635,
+      0.016
+    ],
+    "by_source": {
+      "adult": 0.058333333333333334,
+      "agnews": -0.14285714285714285,
+      "bank": -0.09285714285714286,
+      "covtype": -0.125
+    }
+  },
+  {
+    "budget": 200,
+    "method": "OURS2_paired_shift_ipw",
+    "baseline": "B1_fixed_mcnemar",
+    "split": "test_transfer",
+    "sources": 1,
+    "pairs": 11,
+    "trials": 220,
+    "difference": -0.03636363636363636,
+    "source_bootstrap_95": null,
+    "by_source": {
+      "cifar10": -0.03636363636363636
+    }
+  },
+  {
+    "budget": 200,
+    "method": "B6_active_testing_ipw",
+    "baseline": "B1_fixed_mcnemar",
+    "split": "test_transfer",
+    "sources": 1,
+    "pairs": 11,
+    "trials": 220,
+    "difference": -0.02727272727272727,
+    "source_bootstrap_95": null,
+    "by_source": {
+      "cifar10": -0.02727272727272727
+    }
+  },
+  {
+    "budget": 200,
+    "method": "IPW_uniform",
+    "baseline": "B1_fixed_mcnemar",
+    "split": "test_transfer",
+    "sources": 1,
+    "pairs": 11,
+    "trials": 220,
+    "difference": -0.01818181818181818,
+    "source_bootstrap_95": null,
+    "by_source": {
+      "cifar10": -0.01818181818181818
+    }
+  },
+  {
+    "budget": 500,
+    "method": "OURS2_paired_shift_ipw",
+    "baseline": "B1_fixed_mcnemar",
+    "split": "test_transfer",
+    "sources": 1,
+    "pairs": 11,
+    "trials": 220,
+    "difference": -0.00909090909090909,
+    "source_bootstrap_95": null,
+    "by_source": {
+      "cifar10": -0.00909090909090909
+    }
+  },
+  {
+    "budget": 500,
+    "method": "B6_active_testing_ipw",
+    "baseline": "B1_fixed_mcnemar",
+    "split": "test_transfer",
+    "sources": 1,
+    "pairs": 11,
+    "trials": 220,
+    "difference": -0.013636363636363636,
+    "source_bootstrap_95": null,
+    "by_source": {
+      "cifar10": -0.013636363636363636
+    }
+  },
+  {
+    "budget": 500,
+    "method": "IPW_uniform",
+    "baseline": "B1_fixed_mcnemar",
+    "split": "test_transfer",
+    "sources": 1,
+    "pairs": 11,
+    "trials": 220,
+    "difference": 0.0,
+    "source_bootstrap_95": null,
+    "by_source": {
+      "cifar10": 0.0
+    }
+  }
+]

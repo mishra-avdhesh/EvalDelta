@@ -1,0 +1,85 @@
+{
+  "status": "complete",
+  "created_utc": "2026-09-23T19:45:43.813964+00:00",
+  "phase": "null",
+  "source": "magic",
+  "pairs": [
+    [
+      "v01",
+      "v02"
+    ],
+    [
+      "v02",
+      "v03"
+    ],
+    [
+      "v02",
+      "v04"
+    ]
+  ],
+  "budgets": [
+    200,
+    500
+  ],
+  "trials_planned": 2400,
+  "seeds": [
+    0,
+    199
+  ],
+  "workers": 16,
+  "sha256": {
+    "benchmarks/prepare_magic.py": "430138a622e6c894c4bc1bf8075425f64555da9dfcee3b1cff275a093e09b82e",
+    "benchmarks/run_magic_case_study.py": "62f0dbc09cfcb4c74a5a4c54d8e6c9a5cf4332168188654038ddd0a331aa63dc",
+    "benchmarks/replay_sweep.py": "cc629a23dc270098485257b5b39c6cad3092684f2c11de3301ce9efa9624317b",
+    "docs/EXTERNAL_CASE_STUDY.md": "a640c09c00f8004c7c3ac47ae2fac419f39505791914d3b870c3ac4e8737590b",
+    "docs/STATISTICAL_PROTOCOL.md": "a452615dd2c865878e24bfc850c5c6b70f1c30491cb46a106a61160a78f9e3a7",
+    "configs/frozen.yaml": "9298ebf73ffdfd177e2931bb931a68c2fd6805aa73628e9bb150b254cd6f69bb",
+    "configs/paired_shift_model.json": "ce56b8ca33153b8d58d2745570e97307b6818f8e9cfee0c0a96cbcca997d42ec",
+    "benchmarks/data/raw/magic_gamma_telescope.zip": "252e0a78333c108d0ea54537b61154aa781e95a15675e65ddf9b76993617191d",
+    "benchmarks/data/magic/matrix.parquet": "18dc173a6da94c1df6343af6c540a17cb89acf2729f6211cb01099d301a7841e",
+    "benchmarks/data/magic/versions.json": "8933e8414a70974839694479339a77d75552fde1323143ad450a550e7aebf0e0",
+    "src/evaldelta/__init__.py": "c86e1c3d6a4aeea70535d1b042535bdecc010a07c450effe0a94c43534987844",
+    "src/evaldelta/bench/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/evaldelta/bench/deltabench.py": "5da2fb73cd0aa43b3fef9d7a471e8e090fe8d298de5c1be3ba604b1f1591f91f",
+    "src/evaldelta/bench/episode.py": "b16f5e17a6ccf6cd1bde541a643f96cd3fcde27067e5fb9ff05c6aec7c2808e0",
+    "src/evaldelta/bench/synthetic.py": "6163914af46d5c7a1fc611784f35cf35385a5f1948d5ac18b0e1801db6f17c9f",
+    "src/evaldelta/cli.py": "cd67144f0a13ee4230b581bf1f43823e487d9efe1e4b4dbb2aba47de415e87df",
+    "src/evaldelta/config.py": "3503f1b07224122951600fa840dca23f4908ec9e7deb85c233b54e47a762158b",
+    "src/evaldelta/data/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/evaldelta/data/io.py": "ff160f615a13ffc4d3d59bacc9de389e83e68c2c7b413a27b97ede5843b535c4",
+    "src/evaldelta/data/splits.py": "fcf3b3c1d907a4758d5d0426a7e8f691dad8e55ef4e6790880f922f581495c50",
+    "src/evaldelta/demo.py": "1de8ceb118a6983f9fc8bde64f3c413b583b47e607d50fb0783d8feba9eb9185",
+    "src/evaldelta/experiments/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/evaldelta/experiments/runner.py": "d5a105500b46d7ede4a98212cffd8c1756d0e1ab0e4c5c71b4aa38b3c4b5b961",
+    "src/evaldelta/integrations/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/evaldelta/integrations/github_action.py": "735393c264eba2d4af39e3ffd984dbaf6c43ebf177a3606a0701fc71c4f6963b",
+    "src/evaldelta/integrations/mlflow.py": "918ee4e95c27fb4e6394fb252839fd311fb51e0f219867e4bfee24b504db685a",
+    "src/evaldelta/policies/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/evaldelta/policies/base.py": "87500b6a2cd7fb23f0ef60d339584ba581721ff09720c19a9657984f2b6acf1b",
+    "src/evaldelta/policies/paired_shift.py": "227ea727911085703d05ad778b638cd5b1b8beeb16b00d9c0153481cf71b34f0",
+    "src/evaldelta/policies/registry.py": "0130e3d129228b1e819bcea0d03ef25e5ef1cfccd5798b05d4f997b949565b00",
+    "src/evaldelta/policies/static.py": "7d9e3f888ee48eda3b33f07597854cb5e93b6a816ed64f37da65231004f4213e",
+    "src/evaldelta/policies/uniform.py": "3745d8f99f6536784949f6dd315bb3a4bb5e3716cb7b1636c62a43555876301a",
+    "src/evaldelta/providers/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/evaldelta/providers/base.py": "a5c69d74187a31bbd5de9e103ff686c5956638642261e15d4ddbcb47afcf7967",
+    "src/evaldelta/providers/callable.py": "569f21f71fb2ab75ee6d08ed71aaabebb718f04b649d58d4c9c4204393ca6998",
+    "src/evaldelta/providers/command.py": "063ee1b0537dfe4f2f401975906c13710cf8fb31d9009cb48169d03d76ed7568",
+    "src/evaldelta/providers/http.py": "4493d34f8d86f4e8b87194009c5e0090c04a6c430226d65ac8315bdaf3ab8509",
+    "src/evaldelta/replay/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/evaldelta/replay/adaptive.py": "7bef251b431894d20776d252d387889b4df68d8c9be482c602cef7ee1fab5b7b",
+    "src/evaldelta/replay/budget.py": "a5af64203dd04871aeca47725c2e270c1f34d8af2e827067c9d4ea6cef81d386",
+    "src/evaldelta/replay/oracle.py": "b9e6c2747e2169fed23e90c11006292994ce2e4a60b957b1a0225f08f49e74a1",
+    "src/evaldelta/replay/session.py": "52738a39e5ad5b5f2372d2a8b7505b8c3851fa7710d459b964868558d247bd86",
+    "src/evaldelta/reporting/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/evaldelta/reporting/html_report.py": "06e5e6382673334c53b8dcc7e50a83988525f55b030bf2007d5db2b51598de53",
+    "src/evaldelta/reporting/markdown_report.py": "ba184f07db4fd04d267ae97bbae514c565a28310cc648da8bd7f293964b1ee38",
+    "src/evaldelta/schemas.py": "8448b7e4d0f2024d9931317ce6a9beaf8895d4aa5becd7190a4caaedb75a9fce",
+    "src/evaldelta/statistics/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/evaldelta/statistics/confirmation.py": "218692acad3eedcda9fa71e6963316a2e5b400638f727b6d78e20a9c25edc7ad",
+    "src/evaldelta/statistics/multiplicity.py": "bc0c5c5267462688f4e46ee91ec1706bcca6ccc82bb977dd169111e8e08c1d03",
+    "src/evaldelta/statistics/paired_tests.py": "c16ec52ba3695f44054e2b7e996c6e559cea4404f4227dc8c1a0c3ec39f4b0d1",
+    "src/evaldelta/statistics/sequential.py": "12bd9d8516a9f79e1d640201e89c4e1e449c1b7dcaa563b6ee95711d3ec737f3"
+  },
+  "completed_utc": "2026-09-23T19:47:48.366870+00:00",
+  "seconds": 124.553
+}

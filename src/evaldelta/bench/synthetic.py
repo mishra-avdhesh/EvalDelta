@@ -7,7 +7,7 @@ old-confidence proxy and flip / error rates across *simulated prior versions* (h
 The candidate's outcomes are built with **exact** discordance counts, so the finite-pool Delta
 equals the requested value up to integer rounding.
 
-Scenarios: null_identical, null_noisy, global_regression, slice_regression, improvement,
+Scenarios: null_identical, null_noisy, null_sliced, global_regression, slice_regression, improvement,
 compensating, rare_severe.
 """
 
@@ -24,6 +24,7 @@ from evaldelta.data.io import COST_COL, ID_COL, OLD_LOSS_COL, SLICE_COL, TASK_CO
 SCENARIOS = (
     "null_identical",
     "null_noisy",
+    "null_sliced",
     "global_regression",
     "slice_regression",
     "improvement",
@@ -123,7 +124,15 @@ def generate_episode(
 
     down: list[int] = []
     up: list[int] = []
-    if scenario != "null_identical":
+    if scenario == "null_sliced":
+        # symmetric flips *within every slice*: every slice's Delta is exactly 0
+        for name in np.unique(slice_arr):
+            m = slice_arr == name
+            oc_s, ow_s = idx[m & old_correct], idx[m & ~old_correct]
+            k_s = min(int(round(flip_rate * m.sum() / 2)), len(oc_s), len(ow_s))
+            down.extend(_weighted_pick(rng, oc_s, w[oc_s], k_s))
+            up.extend(_weighted_pick(rng, ow_s, w[ow_s], k_s))
+    elif scenario != "null_identical":
         down.extend(_weighted_pick(rng, oc, w[oc], k_bg))
         up.extend(_weighted_pick(rng, ow, w[ow], k_bg))
 

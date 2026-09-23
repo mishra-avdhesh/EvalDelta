@@ -42,19 +42,18 @@ def plugin_lambdas(
     """
     y = np.asarray(y, dtype=float)
     t = len(y)
-    lam = np.empty(t)
-    mean = prior_mean
-    ss = prior_var
-    cnt = 1.0
+    if t == 0:
+        return np.empty(0)
+    # running regularised mean after each observation: (prior + sum_{i<=j} y_i) / (j + 2)
+    j = np.arange(1, t + 1, dtype=float)
+    means = (prior_mean + np.cumsum(y)) / (j + 1.0)
+    ss = prior_var + np.cumsum((y - means) ** 2)
+    # variance available *before* step s uses observations 1..s-1 (predictable)
+    var_prev = np.empty(t)
+    var_prev[0] = prior_var
+    var_prev[1:] = ss[:-1] / (j[:-1] + 1.0)
     log_term = 2.0 * math.log(1.0 / alpha)
-    for s in range(t):
-        var = ss / cnt
-        lam[s] = math.sqrt(log_term / (max(n_plan, 1) * max(var, 1e-6)))
-        # update with Y_s (becomes available for s+1)
-        new_mean = (mean * cnt + y[s]) / (cnt + 1.0)
-        ss += (y[s] - new_mean) ** 2
-        mean = new_mean
-        cnt += 1.0
+    lam: np.ndarray = np.sqrt(log_term / (max(n_plan, 1) * np.maximum(var_prev, 1e-6)))
     return lam
 
 

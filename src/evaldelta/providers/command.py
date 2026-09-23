@@ -29,16 +29,27 @@ class CommandProvider:
         self.argv = shlex.split(command)
         self.scorer = scorer
         self.timeout_s = timeout_s
+        if retries < 0:
+            raise ValueError("retries must be non-negative")
         self.retries = retries
 
     def evaluate(self, items: Sequence[Mapping[str, Any]]) -> list[EvalOutcome]:
         return [self._one(it) for it in items]
 
-    def _one(self, item: Mapping[str, Any]) -> EvalOutcome:
+    def evaluate_budgeted(
+        self, item: Mapping[str, Any], before_attempt: Callable[[], bool]
+    ) -> EvalOutcome:
+        return self._one(item, before_attempt)
+
+    def _one(
+        self, item: Mapping[str, Any], before_attempt: Callable[[], bool] | None = None
+    ) -> EvalOutcome:
         sid = str(item["sample_id"])
         payload = json.dumps({k: v for k, v in item.items()}, default=str)
         err = None
         for attempt in range(1, self.retries + 2):
+            if before_attempt is not None and not before_attempt():
+                return EvalOutcome(sid, None, error="budget_exhausted", attempts=attempt - 1)
             try:
                 proc = subprocess.run(
                     self.argv,

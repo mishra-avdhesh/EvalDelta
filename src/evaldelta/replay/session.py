@@ -15,7 +15,7 @@ import pandas as pd
 from evaldelta.data.io import COST_COL, OLD_LOSS_COL, SLICE_COL, ItemTable
 from evaldelta.data.splits import Partition, make_partition
 from evaldelta.policies.base import Policy, PolicyView, suspicious_slices
-from evaldelta.providers.base import CandidateProvider, EvalOutcome
+from evaldelta.providers.base import CandidateProvider, EvalOutcome, evaluate_paid
 from evaldelta.replay.budget import BudgetMeter
 from evaldelta.schemas import (
     EXIT_CODES,
@@ -25,7 +25,12 @@ from evaldelta.schemas import (
     RunReport,
     TestEvidence,
 )
-from evaldelta.statistics.confirmation import ConfirmationTest, resolve_method, slice_p_value
+from evaldelta.statistics.confirmation import (
+    FIXED_SAMPLE_METHODS,
+    ConfirmationTest,
+    resolve_method,
+    slice_p_value,
+)
 from evaldelta.statistics.multiplicity import holm
 
 MAX_FAILURE_RATE = 0.10
@@ -200,67 +205,75 @@ class _Run:
         self._reveal_start = len(getattr(session._provider, "revealed_ids", ()))
 
     # -- paying for candidate evaluations ------------------------------------------------------
-    def pay(self, phase: str, ids: Sequence[str]) -> list[EvalOutcome]:
-        if not ids:
-            return []
+    def pay(
+        self, phase: str, ids: Sequence[str], *, max_attempts: int | None = None
+    ) -> list[EvalOutcome]:
         for sid in ids:
             if sid in self.phase_of:
                 raise ProtocolViolation(f"{sid} already evaluated in phase {self.phase_of[sid]}")
-        n = len(ids)
-        if self.cfg.budget.cost_unit == "candidate_calls":
-            cost = float(n)
-        else:
-            cost = float(sum(self._cost[self._pos[i]] for i in ids))
-        self.meter.charge(phase, n, cost)  # raises BudgetExceeded *before* the provider call
+        outcomes: list[EvalOutcome] = []
+        start_calls = self.meter.calls
         rows = cast(list[dict[str, Any]], self.s.items.subset(ids).to_dict(orient="records"))
-        outcomes = self.s._provider.evaluate(rows)
-        if [o.sample_id for o in outcomes] != list(ids):
-            raise ProtocolViolation("provider returned outcomes that do not match requested IDs")
-        failed = 0
-        for o in outcomes:
+        for sid, row in zip(ids, rows, strict=True):
+            unit_cost = (
+                1.0
+                if self.cfg.budget.cost_unit == "candidate_calls"
+                else float(self._cost[self._pos[sid]])
+            )
+
+            def reserve(cost: float = unit_cost) -> bool:
+                if max_attempts is not None and self.meter.calls - start_calls >= max_attempts:
+                    return False
+                if not self.meter.can_afford(phase, 1, cost):
+                    return False
+                self.meter.charge(phase, 1, cost)
+                return True
+
+            o = evaluate_paid(self.s._provider, row, reserve)
+            if o.attempts == 0:
+                break
+            outcomes.append(o)
             self.draw += 1
             self._attempted += 1
-            self.phase_of[o.sample_id] = phase
-            old = float(self._old[self._pos[o.sample_id]])
+            self.phase_of[sid] = phase
+            old = float(self._old[self._pos[sid]])
+            self.meter.phase(phase).failed += o.attempts - int(o.loss is not None)
             if o.loss is None:
-                failed += 1
                 self._failures += 1
+                # Missing confirmation outcomes may depend on loss. Never skip them and
+                # certify performance on the surviving, potentially biased subset.
+                if phase != "discovery":
+                    self.evaluation_error = (
+                        "candidate confirmation failed; missing outcomes may be informative"
+                    )
             else:
-                self.revealed[o.sample_id] = float(o.loss)
+                self.revealed[sid] = float(o.loss)
             self.events.append(
                 {
                     "run_id": self.cfg.run_id,
-                    "sample_id": o.sample_id,
+                    "sample_id": sid,
                     "phase": phase,
                     "policy": getattr(self.policy, "name", "?"),
                     "draw_index": self.draw,
                     "selection_probability": None,
-                    "new_output": (None if not self.s.log_outputs else _jsonable(o.output)),
+                    "new_output": None if not self.s.log_outputs else _jsonable(o.output),
                     "old_loss": old,
                     "new_loss": o.loss,
                     "delta": None if o.loss is None else float(o.loss) - old,
-                    "candidate_calls": 1,
-                    "cost_actual": (
-                        1.0
-                        if self.cfg.budget.cost_unit == "candidate_calls"
-                        else float(self._cost[self._pos[o.sample_id]])
-                    ),
+                    "candidate_calls": o.attempts,
+                    "cost_actual": unit_cost * o.attempts,
                     "attempts": o.attempts,
                     "error": o.error,
                     "seed": self.cfg.seed,
                 }
             )
-        if failed:
-            self.meter.phase(phase).failed += failed
-        if (
-            self._attempted >= 20
-            and self._failures / self._attempted > MAX_FAILURE_RATE
-            and self.evaluation_error is None
-        ):
-            self.evaluation_error = (
-                f"candidate evaluation failure rate {self._failures}/{self._attempted} exceeds "
-                f"{MAX_FAILURE_RATE:.0%}; failures may be informative"
-            )
+            if self._attempted >= 20 and self._failures / self._attempted > MAX_FAILURE_RATE:
+                self.evaluation_error = (
+                    f"candidate evaluation failure rate {self._failures}/{self._attempted} exceeds "
+                    f"{MAX_FAILURE_RATE:.0%}; failures may be informative"
+                )
+            if self.evaluation_error:
+                break
         return outcomes
 
     # -- discovery -----------------------------------------------------------------------------
@@ -292,7 +305,10 @@ class _Run:
             bad = [c for c in chosen if c not in d_set or c in self.phase_of]
             if bad:
                 raise ProtocolViolation(f"policy selected ineligible IDs: {bad[:3]}")
-            for o in self.pay("discovery", chosen):
+            outcomes = self.pay("discovery", chosen)
+            if not outcomes:
+                break
+            for o in outcomes:
                 if o.loss is not None:
                     disc_revealed[o.sample_id] = float(o.loss)
 
@@ -361,12 +377,35 @@ class _Run:
                 if not self._affordable(phase, sid):
                     exhausted = True
                     break
-                spent += 1
-                (o,) = self.pay(phase, [sid])
+                (o,) = self.pay(phase, [sid], max_attempts=call_cap - spent)
+                spent += o.attempts
                 if o.loss is not None:
                     old_vals.append(float(self._old[self._pos[sid]]))
                     new_vals.append(float(o.loss))
             final = exhausted or li == len(test.schedule) - 1
+            if self.evaluation_error or (
+                exhausted and len(new_vals) < target and test.method in FIXED_SAMPLE_METHODS
+            ):
+                # Never turn a cost/retry-dependent stopping time into a fixed-sample look.
+                # A previously completed scheduled look remains valid.
+                if ev is not None and not self.evaluation_error:
+                    return ev.model_copy(
+                        update={"reason": "budget_exhausted_before_next_checkpoint"}
+                    )
+                return TestEvidence(
+                    scope=test.scope,
+                    estimand=test.estimand,
+                    method=test.method,
+                    decision=Decision.INCONCLUSIVE,
+                    reason="confirmation_evaluation_error"
+                    if self.evaluation_error
+                    else "budget_exhausted_before_checkpoint",
+                    n=len(new_vals),
+                    alpha_allocated=test.alpha,
+                    looks_used=0,
+                    looks_planned=len(test.schedule),
+                    population_size=test.population_size,
+                )
             ev = test.evaluate(np.array(old_vals), np.array(new_vals), li, final=final)
             if ev.decision != Decision.INCONCLUSIVE or final:
                 break
@@ -477,6 +516,8 @@ class _Run:
         """Post-run integrity checks (budget, uniqueness, oracle reveal log if available)."""
         if self.meter.calls > self.cfg.budget.max_candidate_calls:
             raise ProtocolViolation("budget exceeded")
+        if sum(e["candidate_calls"] for e in self.events) != self.meter.calls:
+            raise ProtocolViolation("event attempt count does not match paid calls")
         ids = [e["sample_id"] for e in self.events]
         if len(ids) != len(set(ids)):
             raise ProtocolViolation("an item was evaluated twice")

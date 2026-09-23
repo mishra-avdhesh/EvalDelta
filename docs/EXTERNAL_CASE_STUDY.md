@@ -11,8 +11,22 @@ This is an **exploratory external-source robustness check**, separate from the v
 - Boundary-null check: at budgets 200 and 500, B8 and OURS2 each get 200 deterministic replay seeds per pair, with regression margin set to `max(0, true pool Δ)` as in `phase_nullreal`. This margin is for calibration scoring only, not the primary detection comparison. Report numerator/denominator per method and budget; repeated seeds of the same pair are Monte Carlo replicates, not independent external datasets.
 - The run records source, code, model and frozen-config hashes before replay and refuses to overwrite outputs. If no pair has positive Δ, report the external check as non-informative for detection power. Observed null alarms are descriptive; values below 5% do not prove a general type-I guarantee.
 
+Dataset credit: Bock, R. (2004), *MAGIC Gamma Telescope*, UCI Machine Learning Repository, [DOI 10.24432/C52C8B](https://doi.org/10.24432/C52C8B), CC BY 4.0.
+
 The official dataset and raw/derived row-level matrices are **not** part of the code release. Users regenerate them using `benchmarks/prepare_magic.py`, then run `benchmarks/run_magic_case_study.py`. Aggregate findings and limitations will be appended below only after the frozen plan has a Git commit predating first access to the new source outcomes.
 
-## Results
+## Results (recorded after the frozen run)
 
-Pending the frozen run. Do not fill this section from validation or v1/v2 data.
+The plan was committed as `2367647` and the implementation as `55d2d16` **before** the official archive was downloaded. Its SHA-256 is `252e0a78333c108d0ea54537b61154aa781e95a15675e65ddf9b76993617191d`. Archived run manifests are `docs/run_manifests/magic_external_{test,null}_v1.json` (local runs also have a `manifest.json`); aggregate CSVs are `results/frozen/analysis/magic_external_{real,null}.csv`. All **480** detection and **2,400** null trials completed with no evaluation errors or budget violations. The evaluation pool contains 10,000 rows; model training used the separate 9,020 rows.
+
+| Fixed pair | True pool Δ | B200 confirmations (B1 / B8 / IPW uniform / OURS2), each of 20 | B500 confirmations, each of 20 |
+|---|---:|---:|---:|
+| Logistic `v01` → HGB `v02` | −0.0887 | 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 |
+| HGB `v02` → compressed `v03` | +0.0183 | 3 / 1 / 3 / 0 | 7 / 4 / 11 / 10 |
+| HGB `v02` → feature-drop `v04` | +0.0090 | 3 / 0 / 0 / 0 | 5 / 4 / 1 / 3 |
+
+On the two genuinely regressive pairs combined, OURS2 confirmed **0/40** at B200 versus B1 **6/40**. At B500 it confirmed **13/40** versus B1 **12/40**, while IPW uniform also confirmed **12/40**. This is a mixed result on **one source family**; a source-level confidence interval or broad transfer claim would be unjustified. Each method's paid-call counts, including early stops, are in the aggregate CSV.
+
+For the two positive-Δ pairs at the boundary-null margin, B8 false alarms were **2/400** at B200 and **10/400** at B500; OURS2 had **0/400** and **2/400**, respectively. The improving `v01→v02` pair is an interior null (`Δ < 0`, margin 0) and had zero false alarms in 200 seeds per method/budget. These are Monte Carlo replays of three fixed pairs, not 2,400 independent datasets. Observed rates do not prove a universal guarantee.
+
+**Interpretation:** the independent source demonstrates that the packaged replay/test workflow can run on a task absent from historical training. It does **not** establish an adaptive efficiency win. The simulated source and narrow pair ladder further limit generalization; see the [UCI source card](https://archive.ics.uci.edu/dataset/159/magic+gamma+telescope).

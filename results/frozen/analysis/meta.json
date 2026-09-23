@@ -1,0 +1,22 @@
+{
+  "generated_utc": "2026-09-23T19:57:38.802914+00:00",
+  "inputs": [
+    "test_cpu_v1",
+    "nullreal_cpu_v1",
+    "ablate_cpu_v1",
+    "test_transfer_v1",
+    "nullreal_transfer_v1"
+  ],
+  "missing": [],
+  "trial_counts": {
+    "test_cpu_v1": 39420,
+    "nullreal_cpu_v1": 25600,
+    "ablate_cpu_v1": 11580,
+    "test_transfer_v1": 23940,
+    "nullreal_transfer_v1": 28000
+  },
+  "bootstrap_unit": "source family",
+  "bootstrap_reps": 5000,
+  "seed": 20260923,
+  "warning": "Repeated trial seeds are Monte Carlo replicates, not independent datasets."
+}

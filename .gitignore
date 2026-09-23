@@ -11,6 +11,14 @@ runs/
 results/*
 !results/.gitkeep
 !results/frozen/
+results/frozen/**/trials.parquet
+results/frozen/*/manifest.json
+results/frozen/*/meta.json
+!results/frozen/analysis/meta*.json
+benchmarks/data/*/matrix.parquet
 data/cache/
 benchmarks/data/raw/
 .hypothesis/
+
+.venv-gpu/
+benchmarks/data/cifar10_partial/

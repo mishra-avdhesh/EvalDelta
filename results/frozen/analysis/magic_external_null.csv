@@ -1,0 +1,13 @@
+pair,budget,method,true_pool_delta,regression_margin,trials,false_alarms,observed_rate,mean_paid_calls
+magic:v01->v02,200,B8_seq_betting_wor,-0.0887,0.0,200,0,0.0,96.5
+magic:v01->v02,200,OURS2_paired_shift_ipw,-0.0887,0.0,200,0,0.0,119.385
+magic:v01->v02,500,B8_seq_betting_wor,-0.0887,0.0,200,0,0.0,140.0
+magic:v01->v02,500,OURS2_paired_shift_ipw,-0.0887,0.0,200,0,0.0,119.655
+magic:v02->v03,200,B8_seq_betting_wor,0.0183,0.0183,200,0,0.0,199.8
+magic:v02->v03,200,OURS2_paired_shift_ipw,0.0183,0.0183,200,0,0.0,200.0
+magic:v02->v03,500,B8_seq_betting_wor,0.0183,0.0183,200,5,0.025,493.0
+magic:v02->v03,500,OURS2_paired_shift_ipw,0.0183,0.0183,200,1,0.005,499.505
+magic:v02->v04,200,B8_seq_betting_wor,0.009,0.009,200,2,0.01,198.5
+magic:v02->v04,200,OURS2_paired_shift_ipw,0.009,0.009,200,0,0.0,200.0
+magic:v02->v04,500,B8_seq_betting_wor,0.009,0.009,200,5,0.025,459.0
+magic:v02->v04,500,OURS2_paired_shift_ipw,0.009,0.009,200,1,0.005,497.4

@@ -1,0 +1,22 @@
+# Free CI example: live evaluation of a Python-function candidate against cached old results.
+run:
+  run_id: ci-demo
+  seed: 7
+  budget:
+    max_candidate_calls: 300
+  plan:
+    alpha: 0.05
+    regression_margin: 0.0
+    noninferiority_margin: 0.02
+    max_slices: 2
+  policy:
+    name: paired_shift
+items: items.parquet
+provider:
+  type: python
+  callable: "candidate.py:predict"
+  scorer: zero_one
+meta:
+  episode_id: ci-demo
+  old_version_id: prod-2026-09
+  new_version_id: candidate-pr

@@ -32,9 +32,14 @@ class _RankPolicy:
             tiebreak = rng.random(len(items))
             order = np.lexsort((tiebreak, -s))
             self._order = items[ID_COL].to_numpy()[order].tolist()
-        done = set(view.revealed)
-        out = [i for i in self._order if i not in done and i in set(view.unqueried[ID_COL])]
-        return out[:k]
+        eligible = set(view.unqueried[ID_COL])
+        out: list[str] = []
+        for i in self._order:
+            if i in eligible:
+                out.append(i)
+                if len(out) == k:
+                    break
+        return out
 
 
 class HistoricalCohortPolicy(_RankPolicy):

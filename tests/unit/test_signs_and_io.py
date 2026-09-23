@@ -43,6 +43,8 @@ def test_scenarios_have_intended_sign(scenario):
         assert tr["n_down"] == tr["n_up"] == 0
     elif scenario in {"null_noisy", "compensating"}:
         assert tr["delta"] == pytest.approx(0.0, abs=1e-12)
+    elif scenario == "null_sliced":
+        assert all(abs(v) < 1e-12 for v in tr["slice_delta"].values())
     elif scenario == "improvement":
         assert tr["delta"] < 0
     else:

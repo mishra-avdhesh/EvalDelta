@@ -27,6 +27,8 @@ class CallableProvider:
     ) -> None:
         self.fn = fn
         self.scorer = scorer
+        if retries < 0:
+            raise ValueError("retries must be non-negative")
         self.retries = retries
         self.backoff_s = backoff_s
         self.name = name
@@ -34,10 +36,19 @@ class CallableProvider:
     def evaluate(self, items: Sequence[Mapping[str, Any]]) -> list[EvalOutcome]:
         return [self._one(it) for it in items]
 
-    def _one(self, item: Mapping[str, Any]) -> EvalOutcome:
+    def evaluate_budgeted(
+        self, item: Mapping[str, Any], before_attempt: Callable[[], bool]
+    ) -> EvalOutcome:
+        return self._one(item, before_attempt)
+
+    def _one(
+        self, item: Mapping[str, Any], before_attempt: Callable[[], bool] | None = None
+    ) -> EvalOutcome:
         sid = str(item["sample_id"])
         err: str | None = None
         for attempt in range(1, self.retries + 2):
+            if before_attempt is not None and not before_attempt():
+                return EvalOutcome(sid, None, error="budget_exhausted", attempts=attempt - 1)
             try:
                 output = self.fn(item)
             except Exception as exc:  # provider failures are data, not crashes

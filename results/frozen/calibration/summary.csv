@@ -1,0 +1,40 @@
+config,kind,metric,trials,events,rate,ci95_lo,ci95_hi,coverage,mean_paid_calls,mean_global_n
+A_looks|null_noisy|auto|L1,null_global,false confirmed-regression rate,400,7,0.0175,0.00706412822075391,0.035722873593619225,0.965,979.9275,500.0
+A_looks|null_noisy|auto|L10,null_global,false confirmed-regression rate,400,2,0.005,0.0006060978093221484,0.017944144605585428,1.0,968.5525,488.625
+A_looks|null_noisy|auto|L5,null_global,false confirmed-regression rate,400,1,0.0025,6.329251690485726e-05,0.013849769962013272,1.0,960.9275,481.0
+A_null|improvement_f15|auto|B1000,null_global,false confirmed-regression rate,400,0,0.0,0.0,0.00917980458366526,0.9975,900.1,435.6375
+A_null|improvement_f15|auto|B300,null_global,false confirmed-regression rate,400,1,0.0025,6.329251690485726e-05,0.013849769962013272,1.0,276.475,149.875
+A_null|improvement_f15|betting_wor|B1000,null_global,false confirmed-regression rate,400,0,0.0,0.0,0.00917980458366526,0.96,852.2575,387.795
+A_null|improvement_f15|betting_wor|B300,null_global,false confirmed-regression rate,400,0,0.0,0.0,0.00917980458366526,0.99,275.35,148.75
+A_null|improvement_f15|hoeffding_wor|B1000,null_global,false confirmed-regression rate,400,0,0.0,0.0,0.00917980458366526,1.0,964.4625,500.0
+A_null|improvement_f15|hoeffding_wor|B300,null_global,false confirmed-regression rate,400,0,0.0,0.0,0.00917980458366526,1.0,276.6,150.0
+A_null|null_identical|auto|B1000,null_global,false confirmed-regression rate,400,0,0.0,0.0,0.00917980458366526,1.0,800.0,500.0
+A_null|null_identical|auto|B300,null_global,false confirmed-regression rate,400,0,0.0,0.0,0.00917980458366526,1.0,240.0,150.0
+A_null|null_identical|betting_wor|B1000,null_global,false confirmed-regression rate,400,0,0.0,0.0,0.00917980458366526,1.0,634.0,334.0
+A_null|null_identical|betting_wor|B300,null_global,false confirmed-regression rate,400,0,0.0,0.0,0.00917980458366526,1.0,240.0,150.0
+A_null|null_identical|hoeffding_wor|B1000,null_global,false confirmed-regression rate,400,0,0.0,0.0,0.00917980458366526,1.0,800.0,500.0
+A_null|null_identical|hoeffding_wor|B300,null_global,false confirmed-regression rate,400,0,0.0,0.0,0.00917980458366526,1.0,240.0,150.0
+A_null|null_noisy_f15|auto|B1000,null_global,false confirmed-regression rate,400,6,0.015,0.005524109504580662,0.032361294480775016,0.9975,980.1125,484.6225
+A_null|null_noisy_f15|auto|B300,null_global,false confirmed-regression rate,400,6,0.015,0.005524109504580662,0.032361294480775016,0.99,268.525,149.125
+A_null|null_noisy_f15|betting_wor|B1000,null_global,false confirmed-regression rate,400,12,0.03,0.01559555299989434,0.05181721543058358,0.95,964.6075,469.6675
+A_null|null_noisy_f15|betting_wor|B300,null_global,false confirmed-regression rate,400,6,0.015,0.005524109504580662,0.032361294480775016,0.97,266.775,147.375
+A_null|null_noisy_f15|hoeffding_wor|B1000,null_global,false confirmed-regression rate,400,0,0.0,0.0,0.00917980458366526,1.0,995.815,500.0
+A_null|null_noisy_f15|hoeffding_wor|B300,null_global,false confirmed-regression rate,400,0,0.0,0.0,0.00917980458366526,1.0,269.4,150.0
+A_null|null_noisy|auto|B1000,null_global,false confirmed-regression rate,400,2,0.005,0.0006060978093221484,0.017944144605585428,0.995,955.4325,475.505
+A_null|null_noisy|auto|B300,null_global,false confirmed-regression rate,400,3,0.0075,0.001549358949905658,0.0217606685144171,1.0,277.975,149.875
+A_null|null_noisy|betting_wor|B1000,null_global,false confirmed-regression rate,400,7,0.0175,0.00706412822075391,0.035722873593619225,0.98,914.5525,434.78
+A_null|null_noisy|betting_wor|B300,null_global,false confirmed-regression rate,400,2,0.005,0.0006060978093221484,0.017944144605585428,0.9925,277.725,149.625
+A_null|null_noisy|hoeffding_wor|B1000,null_global,false confirmed-regression rate,400,0,0.0,0.0,0.00917980458366526,1.0,979.9275,500.0
+A_null|null_noisy|hoeffding_wor|B300,null_global,false confirmed-regression rate,400,0,0.0,0.0,0.00917980458366526,1.0,278.1,150.0
+B_margin|delta=0.02|betting_wor,null_margin,false confirmed-regression rate,400,8,0.02,0.008673170369118311,0.03902627671162005,0.95,988.83,491.2675
+C_ni|Delta=0.02|ni=0.02,null_ni,false non-inferiority rate,400,3,0.0075,0.001549358949905658,0.0217606685144171,0.99,938.28,440.5525
+D_slices|null_sliced|max3,null_slice,slice-family FWER,400,3,0.0075,0.001549358949905658,0.0217606685144171,0.9925,948.8,293.5
+E_power|Delta=0.01|auto|B1000,power,power (confirmed),200,32,0.16,0.11208749764580188,0.2182990153513408,1.0,962.24,467.58
+E_power|Delta=0.01|betting_wor|B1000,power,power (confirmed),200,36,0.18,0.12936892834839725,0.24038109688400738,0.965,950.63,455.97
+E_power|Delta=0.01|hoeffding_wor|B1000,power,power (confirmed),200,0,0.0,0.0,0.01827534035513624,1.0,994.66,500.0
+E_power|Delta=0.03|auto|B1000,power,power (confirmed),200,127,0.635,0.5641659702100028,0.7017665736329881,0.99,903.27,405.21
+E_power|Delta=0.03|betting_wor|B1000,power,power (confirmed),200,137,0.685,0.6157223022745728,0.7486946743454821,0.945,895.715,397.765
+E_power|Delta=0.03|hoeffding_wor|B1000,power,power (confirmed),200,0,0.0,0.0,0.01827534035513624,1.0,998.06,500.0
+E_power|Delta=0.05|auto|B1000,power,power (confirmed),200,191,0.955,0.916297311924146,0.9792195777729956,0.985,792.155,294.585
+E_power|Delta=0.05|betting_wor|B1000,power,power (confirmed),200,192,0.96,0.922708031773984,0.9825751910055194,0.955,805.74,307.95
+E_power|Delta=0.05|hoeffding_wor|B1000,power,power (confirmed),200,0,0.0,0.0,0.01827534035513624,1.0,998.01,500.0

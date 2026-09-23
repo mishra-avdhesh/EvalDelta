@@ -1,0 +1,27 @@
+# Example: gate a model/prompt change with EvalDelta. Free: no secrets, no GPU, no paid API.
+name: example-regression-gate
+on:
+  pull_request:
+    paths: ["examples/ci_demo/**", "src/**"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  evaldelta:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Build demo data (golden set, cached old results, toy candidate)
+        run: |
+          pip install -e .
+          python examples/ci_demo/make_demo_data.py
+      - name: EvalDelta gate (report-only in the example so the demo job stays green)
+        uses: ./
+        with:
+          config: examples/ci_demo/evaldelta.yaml
+          output-dir: evaldelta-run
+          mode: report-only
+          package: "."

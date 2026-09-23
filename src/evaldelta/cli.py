@@ -14,7 +14,7 @@ from rich.table import Table
 from evaldelta.bench.synthetic import SCENARIOS, generate_episode
 from evaldelta.policies.registry import make_policy
 from evaldelta.replay.session import EvalSession, RunResult
-from evaldelta.schemas import EXIT_CODES, Budget, ConfirmPlan, Decision, PolicyConfig, RunConfig
+from evaldelta.schemas import EXIT_CODES, Budget, Decision, PolicyConfig, RunConfig
 
 app = typer.Typer(
     add_completion=False, help="Budgeted, statistically valid paired regression tests."
@@ -101,7 +101,10 @@ def demo(
 def compare(
     config: Annotated[Path, typer.Option(help="YAML run config")],
     output: Annotated[Path, typer.Option(help="output directory")] = Path("runs/compare"),
-    report_only: bool = False,
+    mode: Annotated[
+        str, typer.Option(help="strict | allow-inconclusive | report-only (exit-code policy)")
+    ] = "strict",
+    report_only: Annotated[bool, typer.Option(help="alias for --mode report-only")] = False,
 ) -> None:
     """Compare a cached old system with a candidate as declared in a YAML config.
 
@@ -121,9 +124,13 @@ def compare(
     from evaldelta.reporting.html_report import render_html
 
     (out / "report.html").write_text(render_html(result.report))
+    from evaldelta.integrations.github_action import exit_code, pr_summary, write_step_summary
+
+    (out / "summary.md").write_text(pr_summary(result.report))
+    write_step_summary(result.report)
     _print_summary(result)
     typer.echo(json.dumps({"decision": result.decision.value, "output": str(out)}))
-    _exit(result, report_only)
+    raise typer.Exit(exit_code(result.report, "report-only" if report_only else mode))
 
 
 @app.command()
@@ -169,5 +176,3 @@ def _entry() -> None:  # pragma: no cover
 
 if __name__ == "__main__":  # pragma: no cover
     app()
-
-__all__ = ["app", "Budget", "ConfirmPlan"]

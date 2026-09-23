@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 
 
@@ -27,6 +28,8 @@ class BudgetMeter:
     _phases: dict[str, _PhaseLedger] = field(default_factory=dict, init=False)
 
     def __post_init__(self) -> None:
+        if self.max_cost is not None and (not math.isfinite(self.max_cost) or self.max_cost < 0):
+            raise ValueError("max_cost must be finite and non-negative")
         if self.max_calls <= 0:
             raise ValueError("max_calls must be positive")
         if sum(self.phase_caps.values()) > self.max_calls:

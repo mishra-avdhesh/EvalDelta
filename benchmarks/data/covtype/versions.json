@@ -1,0 +1,96 @@
+{
+  "source": "covtype",
+  "versions": [
+    {
+      "id": "v01",
+      "release_index": 1,
+      "change_type": "architecture",
+      "description": "standardised logistic regression, 50k rows",
+      "fit_seconds": 9.8
+    },
+    {
+      "id": "v02",
+      "release_index": 2,
+      "change_type": "architecture",
+      "description": "random forest (100 trees, depth 18), 50k rows",
+      "fit_seconds": 1.4
+    },
+    {
+      "id": "v03",
+      "release_index": 3,
+      "change_type": "architecture",
+      "description": "HistGradientBoosting, 50k rows",
+      "fit_seconds": 6.1
+    },
+    {
+      "id": "v04",
+      "release_index": 4,
+      "change_type": "data",
+      "description": "HGB retrained on 100k rows",
+      "fit_seconds": 65.5
+    },
+    {
+      "id": "v05",
+      "release_index": 5,
+      "change_type": "feature",
+      "description": "HGB without Horizontal_Distance_To_Roadways (feature removed)",
+      "fit_seconds": 26.9
+    },
+    {
+      "id": "v06",
+      "release_index": 6,
+      "change_type": "data",
+      "description": "HGB on 100k rows with 10% label noise (bad labelling batch)",
+      "fit_seconds": 49.5
+    },
+    {
+      "id": "v07",
+      "release_index": 7,
+      "change_type": "seed",
+      "description": "HGB 100k rows, different sample and seed (near-null)",
+      "fit_seconds": 7.6
+    },
+    {
+      "id": "v08",
+      "release_index": 8,
+      "change_type": "data",
+      "description": "HGB trained without wilderness area 3 (ingestion filter bug)",
+      "fit_seconds": 48.0
+    },
+    {
+      "id": "v09",
+      "release_index": 9,
+      "change_type": "hyperparameter",
+      "description": "HGB with aggressive schedule: 400 iterations, lr 0.15, 150k rows",
+      "fit_seconds": 111.4
+    },
+    {
+      "id": "v10",
+      "release_index": 10,
+      "change_type": "compression",
+      "description": "HGB compressed: 15 leaves, 100 iterations, 150k rows",
+      "fit_seconds": 3.2
+    },
+    {
+      "id": "v11",
+      "release_index": 11,
+      "change_type": "pipeline",
+      "description": "v09 model with distance features coarsened to 150 m (pipeline change)",
+      "fit_seconds": 66.4
+    },
+    {
+      "id": "v12",
+      "release_index": 12,
+      "change_type": "hyperparameter",
+      "description": "v09 schedule with balanced class weights",
+      "fit_seconds": 22.0
+    }
+  ],
+  "meta": {
+    "task": "tabular_multiclass",
+    "model_family": "sklearn_tabular",
+    "license": "CC BY 4.0 (UCI Covertype); derived outcomes only",
+    "provenance": "sklearn.datasets.fetch_covtype; pool = 10k random rows (seed 2026)",
+    "slices": "wilderness area x elevation tercile"
+  }
+}

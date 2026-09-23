@@ -1,0 +1,12 @@
+# Same example as offline replay from a private outcome table (no candidate calls at all).
+run:
+  run_id: ci-demo-replay
+  seed: 7
+  budget:
+    max_candidate_calls: 300
+  policy:
+    name: uniform
+items: items.parquet
+provider:
+  type: replay
+  outcomes: replay_outcomes_private.parquet

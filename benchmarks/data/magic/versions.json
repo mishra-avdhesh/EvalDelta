@@ -1,0 +1,40 @@
+{
+  "source": "magic",
+  "versions": [
+    {
+      "id": "v01",
+      "release_index": 1,
+      "change_type": "architecture",
+      "description": "standardised logistic regression C=1"
+    },
+    {
+      "id": "v02",
+      "release_index": 2,
+      "change_type": "architecture",
+      "description": "HistGradientBoosting, 100 iterations, 31 leaves"
+    },
+    {
+      "id": "v03",
+      "release_index": 3,
+      "change_type": "compression",
+      "description": "compressed HGB, 50 iterations, 7 leaves"
+    },
+    {
+      "id": "v04",
+      "release_index": 4,
+      "change_type": "feature",
+      "description": "v02 HGB architecture without first feature fLength"
+    }
+  ],
+  "meta": {
+    "task": "binary_classification",
+    "model_family": "sklearn_tabular_physics",
+    "license": "CC BY 4.0 (UCI MAGIC Gamma Telescope)",
+    "provenance": "https://archive.ics.uci.edu/static/public/159/magic+gamma+telescope.zip",
+    "source_sha256": "252e0a78333c108d0ea54537b61154aa781e95a15675e65ddf9b76993617191d",
+    "split_seed": 20260923,
+    "evaluation_pool": 10000,
+    "training_rows": 9020,
+    "first_feature_train_median": 37.135450000000006
+  }
+}
