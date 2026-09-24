@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use EvalDelta, please cite it as below. Cite the source datasets listed in docs/BENCHMARK_CARD.md separately."
+type: software
+title: "EvalDelta: Budget-Constrained Paired Regression Testing for ML Model Versions"
+version: 0.1.0
+date-released: 2026-09-24
+license: Apache-2.0
+repository-code: "https://github.com/mishra-avdhesh/EvalDelta"
+abstract: "Statistically controlled regression testing that compares an old and a new model version on the same items under a fixed evaluation budget, keeping item selection separate from the data used for the decision."
+keywords:
+  - regression testing
+  - model evaluation
+  - sequential testing
+  - MLOps
+authors:
+  - family-names: Mishra
+    given-names: Avdhesh

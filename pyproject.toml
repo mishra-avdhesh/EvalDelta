@@ -12,10 +12,15 @@ license = "Apache-2.0"
 authors = [{ name = "mishra-avdhesh", email = "avdhesh.mishra@research.iiit.ac.in" }]
 keywords = ["evaluation", "regression-testing", "active-testing", "statistics", "mlops"]
 classifiers = [
+  "Development Status :: 4 - Beta",
   "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Operating System :: OS Independent",
   "Intended Audience :: Science/Research",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
+
 dependencies = [
   "numpy>=1.26",
   "scipy>=1.11",
@@ -34,11 +39,28 @@ plots = ["matplotlib>=3.8"]
 vision = ["torch>=2.2", "torchvision>=0.17"]
 mlflow = ["mlflow>=2.10"]
 
+[project.urls]
+Homepage = "https://github.com/mishra-avdhesh/EvalDelta"
+Repository = "https://github.com/mishra-avdhesh/EvalDelta"
+Issues = "https://github.com/mishra-avdhesh/EvalDelta/issues"
+Changelog = "https://github.com/mishra-avdhesh/EvalDelta/blob/main/CHANGELOG.md"
+Demo = "https://huggingface.co/spaces/avdheshmishra/evaldelta-demo"
+
 [project.scripts]
 evaldelta = "evaldelta.cli:app"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/evaldelta"]
+
+[tool.hatch.build.targets.sdist]
+only-include = [
+  "src/evaldelta",
+  "README.md",
+  "LICENSE",
+  "CHANGELOG.md",
+  "CITATION.cff",
+  "pyproject.toml",
+]
 
 [tool.ruff]
 line-length = 100
