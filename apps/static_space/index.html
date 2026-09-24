@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>EvalDelta — synthetic replay demo</title>
+  <style>
+    :root { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #e9f0f7; background: #0b1422; }
+    * { box-sizing: border-box; }
+    body { margin: 0; line-height: 1.5; }
+    a { color: #7ddbd2; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 22px 64px; }
+    nav, .meta, .controls, .card-top, .measure, footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    nav { padding-bottom: 22px; border-bottom: 1px solid #263a51; }
+    .brand { font-weight: 800; font-size: 1.22rem; letter-spacing: -.03em; color: #fff; text-decoration: none; }
+    .nav-link { color: #bcd0e3; text-decoration: none; font-size: .9rem; }
+    .hero { padding: 62px 0 34px; }
+    .eyebrow, .label { color: #79d4ca; font-size: .78rem; font-weight: 750; text-transform: uppercase; letter-spacing: .1em; }
+    h1 { margin: 12px 0 16px; max-width: 780px; font-size: clamp(2.1rem, 5vw, 4rem); line-height: 1.08; letter-spacing: -.055em; }
+    .lead { margin: 0; max-width: 740px; color: #b5c6d8; font-size: 1.08rem; }
+    .meta { justify-content: flex-start; flex-wrap: wrap; margin-top: 26px; }
+    .chip { border: 1px solid #365068; border-radius: 999px; padding: 5px 11px; color: #c6d7e7; background: #122236; font-size: .8rem; }
+    .panel, .card { border: 1px solid #2a4057; background: #111f31; border-radius: 18px; box-shadow: 0 16px 48px #050b1340; }
+    .panel { padding: 26px; }
+    h2 { margin: 0 0 8px; font-size: 1.4rem; letter-spacing: -.025em; }
+    .small { margin: 0; color: #a9bfd3; font-size: .91rem; }
+    .controls { justify-content: flex-start; flex-wrap: wrap; margin-top: 24px; }
+    label { display: grid; gap: 8px; color: #d5e4f0; font-size: .86rem; font-weight: 650; }
+    select { min-width: 225px; max-width: 100%; border-radius: 10px; border: 1px solid #49627a; background: #172b42; color: #f1f6fb; padding: 11px 12px; font: inherit; }
+    select:focus-visible, a:focus-visible { outline: 2px solid #7ddbd2; outline-offset: 3px; }
+    .results { margin-top: 33px; }
+    .audit { display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px; margin: 16px 0; padding: 14px 17px; border-left: 3px solid #79d4ca; background: #15283b; border-radius: 0 10px 10px 0; }
+    .audit strong { font-size: 1.15rem; }
+    .audit span { color: #adc4d7; font-size: .86rem; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .card { padding: 23px; min-width: 0; }
+    h3 { margin: 0; font-size: 1.18rem; }
+    .decision { display: inline-block; margin: 19px 0 20px; border-radius: 9px; padding: 7px 10px; font-size: .82rem; font-weight: 750; }
+    .regression { color: #ffd9d2; background: #6b3435; }
+    .noninferiority { color: #c7f5df; background: #245b4c; }
+    .inconclusive { color: #ffe8b2; background: #65512b; }
+    .error { color: #ffd9d2; background: #6b3435; }
+    .measure { border-top: 1px solid #294158; padding: 9px 0; align-items: baseline; }
+    .measure span { color: #aac0d3; font-size: .88rem; }
+    .measure strong { font-variant-numeric: tabular-nums; text-align: right; }
+    .meter { height: 7px; overflow: hidden; border-radius: 99px; background: #294158; margin: 14px 0 3px; }
+    .meter > div { height: 100%; background: linear-gradient(90deg, #4bb6aa, #8fe4c5); border-radius: inherit; }
+    .note { margin-top: 27px; padding: 22px 25px; border: 1px solid #2a4057; border-radius: 14px; color: #b3c6d8; }
+    .note strong { color: #f1f6fb; }
+    footer { border-top: 1px solid #263a51; margin-top: 45px; padding-top: 22px; flex-wrap: wrap; color: #a7bacd; font-size: .87rem; }
+    @media (max-width: 720px) { .hero { padding-top: 40px; } .grid { grid-template-columns: 1fr; } .panel { padding: 20px; } .controls { align-items: stretch; } label, select { width: 100%; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav><a class="brand" href="https://github.com/mishra-avdhesh/EvalDelta">EvalDelta</a><a class="nav-link" href="https://github.com/mishra-avdhesh/EvalDelta">View source ↗</a></nav>
+    <main>
+      <section class="hero">
+        <div class="eyebrow">Model update checks</div>
+        <h1>Compare two model versions under a fixed evaluation budget.</h1>
+        <p class="lead">A paired regression test asks whether a candidate has made things worse on the same items. EvalDelta keeps exploratory selection separate from the samples used to confirm a result.</p>
+        <div class="meta"><span class="chip">Saved Python replays</span><span class="chip">Synthetic data only</span><span class="chip">5,000 items · seed 42</span></div>
+      </section>
+      <section class="panel" aria-labelledby="explore-title">
+        <h2 id="explore-title">Explore a saved run</h2>
+        <p class="small">Choose a scenario and a maximum number of candidate evaluations. The numbers below were generated by the EvalDelta Python engine before this page was built.</p>
+        <div class="controls">
+          <label>Scenario<select id="scenario"></select></label>
+          <label>Maximum paid calls<select id="budget"></select></label>
+        </div>
+        <div id="output" class="results" aria-live="polite">Loading saved runs…</div>
+      </section>
+      <section class="note"><strong>How to read this:</strong> Positive paired loss change means the candidate is worse. The full-pool value shown above is an after-the-run audit reference; selection policies do not receive hidden candidate outcomes. The interval shown on each card is for the global effect; a regression decision can come from a confirmed slice even when that interval spans zero. Read decisions under the stated <a href="https://github.com/mishra-avdhesh/EvalDelta/blob/main/docs/STATISTICAL_PROTOCOL.md">sampling assumptions</a>. An inconclusive result is never approval to deploy.</section>
+    </main>
+    <footer><span>Static replay of synthetic cases. No uploads or model execution.</span><span><a href="https://github.com/mishra-avdhesh/EvalDelta/blob/main/docs/RESULTS.md">Real benchmark results and limitations ↗</a></span></footer>
+  </div>
+  <script>
+    const scenarioSelect = document.getElementById('scenario');
+    const budgetSelect = document.getElementById('budget');
+    const output = document.getElementById('output');
+    const decisionLabels = {
+      confirmed_regression: 'Confirmed regression',
+      evidence_of_noninferiority: 'Evidence of non-inferiority',
+      inconclusive: 'Inconclusive',
+      evaluation_error: 'Evaluation error'
+    };
+    const number = value => value == null ? '—' : Number(value).toFixed(4);
+    function measure(label, value) {
+      const row = document.createElement('div');
+      row.className = 'measure';
+      const name = document.createElement('span');
+      name.textContent = label;
+      const amount = document.createElement('strong');
+      amount.textContent = value;
+      row.append(name, amount);
+      return row;
+    }
+    function render(data) {
+      const budget = Number(budgetSelect.value);
+      const run = data.runs[scenarioSelect.value][String(budget)];
+      output.replaceChildren();
+      const heading = document.createElement('h2');
+      heading.textContent = 'Comparison';
+      output.append(heading);
+      const audit = document.createElement('div');
+      audit.className = 'audit';
+      const auditName = document.createElement('span');
+      auditName.textContent = 'Full-pool change, revealed for audit';
+      const auditValue = document.createElement('strong');
+      auditValue.textContent = (run.true_delta >= 0 ? '+' : '') + number(run.true_delta);
+      audit.append(auditName, auditValue);
+      output.append(audit);
+      const grid = document.createElement('div');
+      grid.className = 'grid';
+      for (const row of run.rows) {
+        const card = document.createElement('article');
+        card.className = 'card';
+        const title = document.createElement('h3');
+        title.textContent = row.selector === 'paired_shift' ? 'PairedShift' : 'Uniform sampling';
+        card.append(title);
+        const badge = document.createElement('div');
+        badge.className = 'decision ' + ({confirmed_regression: 'regression', evidence_of_noninferiority: 'noninferiority', inconclusive: 'inconclusive'}[row.decision] || 'error');
+        badge.textContent = decisionLabels[row.decision] || row.decision;
+        card.append(badge);
+        card.append(measure('Paid candidate calls', `${row.paid_calls} / ${budget}`));
+        card.append(measure('Global confirmation items', String(row.global_sample)));
+        card.append(measure('Estimated global change', number(row.estimated_change)));
+        card.append(measure('Global effect interval', `[${number(row.lower_bound)}, ${number(row.upper_bound)}]`));
+        card.append(measure('Confirmed slices', row.confirmed_slices || 'None'));
+        const meter = document.createElement('div');
+        meter.className = 'meter';
+        meter.setAttribute('aria-label', `${row.paid_calls} of ${budget} paid calls used`);
+        const fill = document.createElement('div');
+        fill.style.width = `${Math.min(100, Math.max(0, row.paid_calls / budget * 100))}%`;
+        meter.append(fill);
+        card.append(meter);
+        grid.append(card);
+      }
+      output.append(grid);
+    }
+    fetch('data.json').then(response => {
+      if (!response.ok) throw new Error('Saved runs could not be loaded');
+      return response.json();
+    }).then(data => {
+      for (const [key, label] of Object.entries(data.scenarios)) {
+        const option = new Option(label, key);
+        scenarioSelect.add(option);
+      }
+      for (const budget of data.budgets) budgetSelect.add(new Option(`${budget} calls`, String(budget)));
+      scenarioSelect.value = 'slice_regression';
+      budgetSelect.value = '300';
+      scenarioSelect.addEventListener('change', () => render(data));
+      budgetSelect.addEventListener('change', () => render(data));
+      render(data);
+    }).catch(error => { output.textContent = error.message; });
+  </script>
+</body>
+</html>
