@@ -103,7 +103,7 @@ frozen model.
 `docs/figures/F1_global_test_v2.png`, `F1_global_test_transfer_v2.png`: detection rate vs budget,
 4-source CPU family and transfer family. `F3_null_cpu_v2.png`: boundary-null false-alarm rate.
 `F4_slice_test_v2.png`, `F4_slice_test_transfer_v2.png`: target-slice confirmation rate vs budget.
-The revision-1 figures (no suffix) remain for comparison.
+The revision-1 aggregate tables remain for comparison.
 
 ## 5b. Provenance and revision-2 caveats
 

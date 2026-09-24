@@ -16,7 +16,7 @@ specification's heuristic:
 where p_down applies only to old-correct items and p_up only to old-wrong items. Selection takes
 the top scores subject to a per-slice cap per batch, plus a random-exploration fraction.
 
-This is a heuristic, not a new algorithm. See docs/NOVELTY_AUDIT.md.
+This is a heuristic, not a new algorithm.
 """
 
 from __future__ import annotations

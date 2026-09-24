@@ -6,7 +6,7 @@ Use Python 3.11 or 3.12. `pip install -e '.[dev,plots]'` is CPU-only. The frozen
 
 ## Data generation
 
-`python benchmarks/prepare_real.py --sources covtype adult agnews bank` rebuilds the CPU matrices from upstream data (from UCI/OpenML and a Hugging Face parquet mirror; check each source's terms before downloading or redistributing). This may download data and takes longer than the default tests. The CIFAR-10 checkpoint cache is optional: `python benchmarks/prepare_vision.py --require-cuda`. Current partial cache covers v01–v11; `--through v11` assembles that labelled subset when later checkpoints are unavailable (checkpoints v12+ are blocked on a slow/corrupt upstream GitHub release download — see `docs/COMPUTE_LOG.md`). The research replay itself is CPU-only.
+`python benchmarks/prepare_real.py --sources covtype adult agnews bank` rebuilds the CPU matrices from upstream data (from UCI/OpenML and a Hugging Face parquet mirror; check each source's terms before downloading or redistributing). This may download data and takes longer than the default tests. The CIFAR-10 checkpoint cache is optional: `python benchmarks/prepare_vision.py --require-cuda`. Current partial cache covers v01–v11; `--through v11` assembles that labelled subset when later checkpoints are unavailable (checkpoints v12+ were unavailable from the upstream release during this study). The research replay itself is CPU-only.
 
 ## Validation and frozen tests (revision 2: 4 source families)
 

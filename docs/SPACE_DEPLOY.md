@@ -26,9 +26,3 @@ git push
 ```
 
 After the Space builds, open its public App tab, change the scenario and budget, and check both result cards. Add the live Space URL to the main GitHub README in a follow-up commit. The real-data benchmark findings remain in [RESULTS.md](RESULTS.md), separate from these synthetic examples.
-
-## Optional live Gradio replay
-
-The Python-backed app in `apps/hf_space/app.py` can evaluate an uploaded **offline outcome table** or generate a synthetic episode on request. Build its separate data-free bundle with `python scripts/build_space_bundle.py`; run it locally with `python dist/space/app.py` after installing `.[demo]`.
-
-As of September 2026, creating a Gradio Space on CPU Basic requires a paid personal plan. Eligible free personal accounts can host up to two Gradio Spaces on ZeroGPU, subject to Hugging Face's account conditions and runtime rules. Check the [current Spaces overview](https://huggingface.co/docs/hub/spaces-overview) and [ZeroGPU guide](https://huggingface.co/docs/hub/spaces-zerogpu) before choosing this route. The static demo above is the no-cost default.

@@ -9,7 +9,7 @@ description = "Budget-constrained, statistically valid paired regression testing
 readme = "README.md"
 requires-python = ">=3.11"
 license = "Apache-2.0"
-authors = [{ name = "EvalDelta contributors" }]
+authors = [{ name = "mishra-avdhesh", email = "avdhesh.mishra@research.iiit.ac.in" }]
 keywords = ["evaluation", "regression-testing", "active-testing", "statistics", "mlops"]
 classifiers = [
   "Programming Language :: Python :: 3",
@@ -32,7 +32,6 @@ dependencies = [
 dev = ["pytest>=8", "hypothesis>=6.100", "ruff>=0.5", "mypy>=1.10", "pandas-stubs", "types-PyYAML", "build"]
 plots = ["matplotlib>=3.8"]
 vision = ["torch>=2.2", "torchvision>=0.17"]
-demo = ["gradio>=4.0,<7.0", "matplotlib>=3.8"]
 mlflow = ["mlflow>=2.10"]
 
 [project.scripts]
