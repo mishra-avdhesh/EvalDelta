@@ -6,6 +6,8 @@ A run ends with `confirmed_regression`, `evidence_of_noninferiority`, `inconclus
 
 ## Try it
 
+[Open the browser demo](https://huggingface.co/spaces/avdheshmishra/evaldelta-demo) to compare saved synthetic replays across scenarios and budgets. It displays precomputed results, not a live evaluation.
+
 ```bash
 pip install -e .
 evaldelta demo --scenario slice-regression --budget 100 --seed 42
