@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <title>EvalDelta — synthetic replay demo</title>
+  <title>EvalDelta — saved replay and benchmark results</title>
   <style>
     :root { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #e9f0f7; background: #0b1422; }
     * { box-sizing: border-box; }
@@ -46,6 +46,8 @@
     .measure strong { font-variant-numeric: tabular-nums; text-align: right; }
     .meter { height: 7px; overflow: hidden; border-radius: 99px; background: #294158; margin: 14px 0 3px; }
     .meter > div { height: 100%; background: linear-gradient(90deg, #4bb6aa, #8fe4c5); border-radius: inherit; }
+    .benchmark { margin-top: 25px; }
+    .benchmark .grid { margin-top: 20px; }
     .note { margin-top: 27px; padding: 22px 25px; border: 1px solid #2a4057; border-radius: 14px; color: #b3c6d8; }
     .note strong { color: #f1f6fb; }
     footer { border-top: 1px solid #263a51; margin-top: 45px; padding-top: 22px; flex-wrap: wrap; color: #a7bacd; font-size: .87rem; }
@@ -60,7 +62,7 @@
         <div class="eyebrow">Model update checks</div>
         <h1>Compare two model versions under a fixed evaluation budget.</h1>
         <p class="lead">A paired regression test asks whether a candidate has made things worse on the same items. EvalDelta keeps exploratory selection separate from the samples used to confirm a result.</p>
-        <div class="meta"><span class="chip">Saved Python replays</span><span class="chip">Synthetic data only</span><span class="chip">5,000 items · seed 42</span></div>
+        <div class="meta"><span class="chip">Saved Python replays</span><span class="chip">Synthetic replays + real benchmark summary</span><span class="chip">5,000 items · seed 42</span></div>
       </section>
       <section class="panel" aria-labelledby="explore-title">
         <h2 id="explore-title">Explore a saved run</h2>
@@ -71,9 +73,16 @@
         </div>
         <div id="output" class="results" aria-live="polite">Loading saved runs…</div>
       </section>
-      <section class="note"><strong>How to read this:</strong> Positive paired loss change means the candidate is worse. The full-pool value shown above is an after-the-run audit reference; selection policies do not receive hidden candidate outcomes. The interval shown on each card is for the global effect; a regression decision can come from a confirmed slice even when that interval spans zero. Read decisions under the stated <a href="https://github.com/mishra-avdhesh/EvalDelta/blob/main/docs/STATISTICAL_PROTOCOL.md">sampling assumptions</a>. An inconclusive result is never approval to deploy.</section>
+      <section class="panel benchmark" aria-labelledby="benchmark-title">
+        <h2 id="benchmark-title">Real-data benchmark summary</h2>
+        <p class="small">Precomputed aggregate results from revision 2: Adult, Covertype, AG News, and Bank Marketing, plus a separate CIFAR-10 transfer test. No dataset rows or models run on this page.</p>
+        <div class="controls"><label>Maximum paid calls<select id="real-budget"><option value="200">200 calls</option><option value="500" selected>500 calls</option></select></label></div>
+        <div id="real-output" class="results" aria-live="polite">Loading aggregate results…</div>
+        <p class="small">Each rate uses repeated seeds on fixed model-version pairs; those repeats are not independent datasets. The four-source interval spans zero, and one CIFAR-10 source cannot support a source-level interval. These results do not establish an efficiency advantage. Revision 2 reused three test source pairs after revision 1, so it is not a pristine second held-out test. See the <a href="https://github.com/mishra-avdhesh/EvalDelta/blob/main/docs/RESULTS.md">results and limitations</a>.</p>
+      </section>
+      <section class="note"><strong>How to read the synthetic replay:</strong></strong> Positive paired loss change means the candidate is worse. The full-pool value shown above is an after-the-run audit reference; selection policies do not receive hidden candidate outcomes. The interval shown on each card is for the global effect; a regression decision can come from a confirmed slice even when that interval spans zero. Read decisions under the stated <a href="https://github.com/mishra-avdhesh/EvalDelta/blob/main/docs/STATISTICAL_PROTOCOL.md">sampling assumptions</a>. An inconclusive result is never approval to deploy.</section>
     </main>
-    <footer><span>Static replay of synthetic cases. No uploads or model execution.</span><span><a href="https://github.com/mishra-avdhesh/EvalDelta/blob/main/docs/RESULTS.md">Real benchmark results and limitations ↗</a></span></footer>
+    <footer><span>Saved synthetic replays and real benchmark aggregates. No uploads or model execution.</span><span><a href="https://github.com/mishra-avdhesh/EvalDelta/blob/main/docs/RESULTS.md">Real benchmark results and limitations ↗</a></span></footer>
   </div>
   <script>
     const scenarioSelect = document.getElementById('scenario');
@@ -139,6 +148,38 @@
       }
       output.append(grid);
     }
+    const realBudgetSelect = document.getElementById('real-budget');
+    const realOutput = document.getElementById('real-output');
+    const percent = value => `${(100 * value).toFixed(1)}%`;
+    const signedPoints = value => `${value >= 0 ? '+' : ''}${(100 * value).toFixed(1)} pp`;
+    function renderReal(data) {
+      const budget = realBudgetSelect.value;
+      realOutput.replaceChildren();
+      const grid = document.createElement('div');
+      grid.className = 'grid';
+      for (const [split, title] of [['test', 'Four-source test'], ['test_transfer', 'CIFAR-10 transfer']]) {
+        const row = data.cells[split][budget];
+        const card = document.createElement('article');
+        card.className = 'card';
+        const heading = document.createElement('h3');
+        heading.textContent = title;
+        card.append(heading);
+        card.append(measure('Adaptive global detection', percent(row.adaptive_rate)));
+        card.append(measure('Fixed McNemar detection', percent(row.baseline_rate)));
+        card.append(measure('Difference', signedPoints(row.difference)));
+        card.append(measure('Source-bootstrap 95% interval', row.source_bootstrap_95 ? `[${signedPoints(row.source_bootstrap_95[0])}, ${signedPoints(row.source_bootstrap_95[1])}]` : 'Unavailable: one source'));
+        card.append(measure('Version pairs · trials per method', `${row.pairs} · ${row.trials_per_method}`));
+        grid.append(card);
+      }
+      realOutput.append(grid);
+    }
+    fetch('benchmark.json').then(response => {
+      if (!response.ok) throw new Error('Benchmark summary could not be loaded');
+      return response.json();
+    }).then(data => {
+      realBudgetSelect.addEventListener('change', () => renderReal(data));
+      renderReal(data);
+    }).catch(error => { realOutput.textContent = error.message; });
     fetch('data.json').then(response => {
       if (!response.ok) throw new Error('Saved runs could not be loaded');
       return response.json();

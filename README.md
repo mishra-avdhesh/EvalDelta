@@ -6,7 +6,7 @@ A run ends with `confirmed_regression`, `evidence_of_noninferiority`, `inconclus
 
 ## Try it
 
-[Open the browser demo](https://huggingface.co/spaces/avdheshmishra/evaldelta-demo) to compare saved synthetic replays across scenarios and budgets. It displays precomputed results, not a live evaluation.
+[Open the browser demo](https://huggingface.co/spaces/avdheshmishra/evaldelta-demo) to compare saved synthetic replays and inspect selected aggregate results from the real-data benchmark. It displays precomputed results, not a live evaluation.
 
 ```bash
 pip install -e .
@@ -44,6 +44,6 @@ Read the [results](docs/RESULTS.md) for denominators, settings, plots, and limit
 - `benchmarks/`: scripts to prepare source data and run the experiments.
 - `tests/`: statistical, budget, leakage, integration, and unit checks.
 - `results/frozen/analysis/` and `docs/figures/`: aggregate outputs and plots. The [run manifests](docs/run_manifests/) record settings and file hashes.
-- `apps/static_space/`: source for the [free static demo](docs/SPACE_DEPLOY.md) built from saved synthetic replays.
+- `apps/static_space/`: source for the [free static demo](docs/SPACE_DEPLOY.md) built from saved synthetic replays and benchmark aggregates.
 
 Raw source data, model checkpoints, item-level prediction matrices, and trial-level records are not included. The example tables are generated when needed. Dataset and checkpoint terms remain with their original publishers; the [Apache-2.0 license](LICENSE) covers this repository's code.
