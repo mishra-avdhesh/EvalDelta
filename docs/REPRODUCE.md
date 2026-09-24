@@ -2,7 +2,7 @@
 
 ## Environment
 
-Use Python 3.11 or 3.12. `pip install -e '.[dev,plots]'` is CPU-only. The frozen policy is in `configs/frozen.yaml`; its model hash is checked before held-out runs. The revision-1 frozen settings were committed in `48461e6` before access to held-out outcomes; the revision-2 re-freeze was recorded in file timestamps and run manifests before the rerun, then committed afterward (see `docs/RESULTS.md` §5b). Repeated seeds are Monte Carlo replicates of a version pair, not independent real datasets.
+Use Python 3.11 or 3.12. `pip install -e '.[dev,plots]'` is CPU-only. The frozen policy is in `configs/frozen.yaml`; its model hash is checked before held-out runs. The revision-1 frozen settings are in snapshot `bbc1d6c`; the original local history recorded the freeze before held-out access, but the public commit ID was regenerated afterward and does not independently prove that timing (see `docs/RESULTS.md` §5b). The revision-2 re-freeze was recorded in file timestamps and run manifests before the rerun, then committed afterward. Repeated seeds are Monte Carlo replicates of a version pair, not independent real datasets.
 
 ## Data generation
 
@@ -10,7 +10,7 @@ Use Python 3.11 or 3.12. `pip install -e '.[dev,plots]'` is CPU-only. The frozen
 
 ## Validation and frozen tests (revision 2: 4 source families)
 
-When generated locally, validation artifacts are in `results/frozen/validate/` and `validate2/` (the prior 3-source revision-1 files are retained only in this working environment; the v1 freeze itself is in commit `48461e6`). Row-level trial files are excluded from the public Git repository. Archived run manifests are in `docs/run_manifests/`, and the aggregate published tables are in `results/frozen/analysis/`. They were used to select settings. Do not retune the policy from held-out artifacts. The frozen CPU experiment was run with:
+When generated locally, validation artifacts are in `results/frozen/validate/` and `validate2/` (the prior 3-source revision-1 files are retained only in this working environment; the public v1 freeze snapshot is `bbc1d6c`). Row-level trial files are excluded from the public Git repository. Archived run manifests are in `docs/run_manifests/`, and the aggregate published tables are in `results/frozen/analysis/`. They were used to select settings. Do not retune the policy from held-out artifacts. The frozen CPU experiment was run with:
 
 ```bash
 python benchmarks/prepare_real.py --sources bank                          # 4th source family
@@ -34,7 +34,7 @@ Compare methods at the same maximum paid-call budget and report actual calls spe
 
 ## Separate MAGIC external-source check
 
-The sixth dataset has a [precommitted protocol](EXTERNAL_CASE_STUDY.md) and is **not** pooled into DeltaBench v2. Its source is UCI MAGIC Gamma Telescope (CC BY 4.0); the data are Monte Carlo simulated physics events. The download and row-level outcome matrix remain local. The plan commit `fb31b35` and implementation commit `e469fdc` predate the first download. Reproduce with:
+The sixth dataset has a [fixed protocol](EXTERNAL_CASE_STUDY.md) and is **not** pooled into DeltaBench v2. Its source is UCI MAGIC Gamma Telescope (CC BY 4.0); the data are Monte Carlo simulated physics events. The download and row-level outcome matrix remain local. The plan and implementation snapshots are `8aa3c57` and `052c379`; their public IDs were regenerated after the run and do not independently establish pre-download timing. Reproduce with:
 
 ```bash
 python benchmarks/prepare_magic.py

@@ -66,9 +66,9 @@ meaningful bootstrap CI. At budget 500: OURS2 28.6% vs B1 29.5% (-0.9pp). At bud
 `slice_injected.csv` (rev. 1) and `slice_injected_v2.csv` (rev. 2), CPU test split, target-slice
 confirmation rate. **Both revisions used the same slice-ranking heuristic (`slice_rank:
 residual_z`)**: it was selected on validation data (`validate2`) before the revision-1 held-out
-run and is present in the committed revision-1 config (`48461e6`). Nothing about the ranking
+run and is present in the revision-1 config snapshot (`bbc1d6c`). Nothing about the ranking
 changed between revisions; only the source set, the retrained historical model and the
-re-frozen hyperparameters did.
+re-frozen hyperparameters did. The public snapshot's timing limitation is described in §5b.
 
 | Budget | `paired_shift` rev. 1 | `uniform` rev. 1 | `stratified` rev. 1 | `paired_shift` rev. 2 | `uniform` rev. 2 | `stratified` rev. 2 |
 |---:|---:|---:|---:|---:|---:|---:|
@@ -105,16 +105,19 @@ frozen model.
 `F4_slice_test_v2.png`, `F4_slice_test_transfer_v2.png`: target-slice confirmation rate vs budget.
 The revision-1 figures (no suffix) remain for comparison.
 
-## 5b. Provenance caveat for revision 2
+## 5b. Provenance and revision-2 caveats
 
-Revision 1's freeze is backed by git (`48461e6`, committed before held-out runs). Revision 2's
-re-freeze (`configs/frozen.yaml` written 16:31 UTC, held-out runs started 16:34 UTC) is evidenced
-by file timestamps and each run's `manifest.json` hashes, **not** by a commit made before the run. Also, the
-Adult/Covertype/AG News held-out test pairs in revision 2 are the same ones already seen in
-revision 1, and the decision to add a fourth source and retrain was made after seeing revision-1
-held-out results. The retraining and hyperparameter selection themselves used only historical-train
-and validation episodes, but revision 2 is a robustness re-run, not a pristine second held-out
-test. Only the Bank Marketing episodes are new to both stages.
+The original local history recorded revision 1's freeze before held-out runs. This public
+branch was republished with new commit IDs after those runs; `bbc1d6c` has the original
+snapshot's file tree, but its current public ID is **not independent proof of pre-run timing**.
+Revision 2's re-freeze (`configs/frozen.yaml` written 16:31 UTC, held-out runs started
+16:34 UTC) is evidenced by file timestamps and each run's `manifest.json` hashes, **not** by a
+commit made before the run. Also, the Adult/Covertype/AG News held-out test pairs in revision 2
+are the same ones already seen in revision 1, and the decision to add a fourth source and retrain
+was made after seeing revision-1 held-out results. The retraining and hyperparameter selection
+themselves used only historical-train and validation episodes, but revision 2 is a robustness
+re-run, not a pristine second held-out test. Only the Bank Marketing episodes are new to both
+stages.
 
 ## 6. What this benchmark does not show
 

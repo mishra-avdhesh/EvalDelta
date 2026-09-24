@@ -13,11 +13,11 @@ This is an **exploratory external-source robustness check**, separate from the v
 
 Dataset credit: Bock, R. (2004), *MAGIC Gamma Telescope*, UCI Machine Learning Repository, [DOI 10.24432/C52C8B](https://doi.org/10.24432/C52C8B), CC BY 4.0.
 
-The official dataset and raw/derived row-level matrices are **not** part of the code release. Users regenerate them using `benchmarks/prepare_magic.py`, then run `benchmarks/run_magic_case_study.py`. Aggregate findings and limitations will be appended below only after the frozen plan has a Git commit predating first access to the new source outcomes.
+The official dataset and raw/derived row-level matrices are **not** part of the code release. Users regenerate them using `benchmarks/prepare_magic.py`, then run `benchmarks/run_magic_case_study.py`. The original local history recorded this plan before first access to the new source outcomes; see the public-history timing caveat in the results section below.
 
 ## Results (recorded after the frozen run)
 
-The plan was committed as `fb31b35` and the implementation as `e469fdc` **before** the official archive was downloaded. Its SHA-256 is `252e0a78333c108d0ea54537b61154aa781e95a15675e65ddf9b76993617191d`. Archived run manifests are `docs/run_manifests/magic_external_{test,null}_v1.json` (local runs also have a `manifest.json`); aggregate CSVs are `results/frozen/analysis/magic_external_{real,null}.csv`. All **480** detection and **2,400** null trials completed with no evaluation errors or budget violations. The evaluation pool contains 10,000 rows; model training used the separate 9,020 rows.
+The original local history recorded the plan and implementation before the official archive was downloaded. The corresponding public snapshots are `8aa3c57` and `052c379`, but their IDs were regenerated after the run and are **not independent proof of that ordering**. The archive's SHA-256 is `252e0a78333c108d0ea54537b61154aa781e95a15675e65ddf9b76993617191d`. Archived run manifests are `docs/run_manifests/magic_external_{test,null}_v1.json` (local runs also have a `manifest.json`); aggregate CSVs are `results/frozen/analysis/magic_external_{real,null}.csv`. All **480** detection and **2,400** null trials completed with no evaluation errors or budget violations. The evaluation pool contains 10,000 rows; model training used the separate 9,020 rows.
 
 | Fixed pair | True pool Δ | B200 confirmations (B1 / B8 / IPW uniform / OURS2), each of 20 | B500 confirmations, each of 20 |
 |---|---:|---:|---:|
