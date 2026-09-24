@@ -17,8 +17,8 @@ inputs:
     description: "Python version"
     default: "3.11"
   package:
-    description: "pip requirement for EvalDelta (a path, a git URL or a version spec)"
-    default: "evaldelta"
+    description: "Optional pip requirement; defaults to the code bundled with this Action"
+    default: ""
 outputs:
   decision:
     description: "confirmed_regression | evidence_of_noninferiority | inconclusive | evaluation_error"
@@ -31,15 +31,26 @@ runs:
         python-version: ${{ inputs.python-version }}
     - name: Install EvalDelta
       shell: bash
-      run: python -m pip install --quiet "${{ inputs.package }}"
+      env:
+        EVALDELTA_PACKAGE: ${{ inputs.package }}
+      run: |
+        if [[ -n "$EVALDELTA_PACKAGE" ]]; then
+          python -m pip install --quiet "$EVALDELTA_PACKAGE"
+        else
+          python -m pip install --quiet "$GITHUB_ACTION_PATH"
+        fi
     - name: Run EvalDelta
       id: run
       shell: bash
+      env:
+        EVALDELTA_CONFIG: ${{ inputs.config }}
+        EVALDELTA_OUTPUT_DIR: ${{ inputs.output-dir }}
+        EVALDELTA_MODE: ${{ inputs.mode }}
       run: |
         set +e
-        evaldelta compare --config "${{ inputs.config }}" --output "${{ inputs.output-dir }}" --mode "${{ inputs.mode }}" | tail -n 1 > "${{ runner.temp }}/evaldelta.json"
+        evaldelta compare --config "$EVALDELTA_CONFIG" --output "$EVALDELTA_OUTPUT_DIR" --mode "$EVALDELTA_MODE" | tail -n 1 > "$RUNNER_TEMP/evaldelta.json"
         code=${PIPESTATUS[0]}
-        python -c "import json,sys; print('decision=' + json.load(open(sys.argv[1]))['decision'])" "${{ runner.temp }}/evaldelta.json" >> "$GITHUB_OUTPUT" || echo "decision=evaluation_error" >> "$GITHUB_OUTPUT"
+        python -c "import json,sys; print('decision=' + json.load(open(sys.argv[1]))['decision'])" "$RUNNER_TEMP/evaldelta.json" >> "$GITHUB_OUTPUT" || echo "decision=evaluation_error" >> "$GITHUB_OUTPUT"
         exit $code
     - name: Upload EvalDelta report
       if: always()

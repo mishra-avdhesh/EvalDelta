@@ -24,4 +24,3 @@ jobs:
           config: examples/ci_demo/evaldelta.yaml
           output-dir: evaldelta-run
           mode: report-only
-          package: "."

@@ -22,7 +22,7 @@ python examples/ci_demo/make_demo_data.py
 evaldelta compare --config examples/ci_demo/evaldelta.yaml --output runs/ci-demo
 ```
 
-The script creates its synthetic tables locally. The [example workflow](.github/workflows/example_regression.yml) generates the same tables before running the [GitHub Action](action.yml). None of the tables are stored in Git.
+The script creates its synthetic tables locally. The [example workflow](.github/workflows/example_regression.yml) generates the same tables before running the [GitHub Action](action.yml). The Action installs EvalDelta from its own checkout by default, so it does not require a PyPI release. None of the tables are stored in Git.
 
 ## Method
 
