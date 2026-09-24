@@ -66,7 +66,7 @@ meaningful bootstrap CI. At budget 500: OURS2 28.6% vs B1 29.5% (-0.9pp). At bud
 `slice_injected.csv` (rev. 1) and `slice_injected_v2.csv` (rev. 2), CPU test split, target-slice
 confirmation rate. **Both revisions used the same slice-ranking heuristic (`slice_rank:
 residual_z`)**: it was selected on validation data (`validate2`) before the revision-1 held-out
-run and is present in the revision-1 config snapshot (`bbc1d6c`). Nothing about the ranking
+run and is present in the revision-1 config snapshot (`45c88a0`). Nothing about the ranking
 changed between revisions; only the source set, the retrained historical model and the
 re-frozen hyperparameters did. The public snapshot's timing limitation is described in §5b.
 
@@ -108,8 +108,9 @@ The revision-1 aggregate tables remain for comparison.
 ## 5b. Provenance and revision-2 caveats
 
 The original local history recorded revision 1's freeze before held-out runs. This public
-branch was republished with new commit IDs after those runs; `bbc1d6c` has the original
-snapshot's file tree, but its current public ID is **not independent proof of pre-run timing**.
+branch was republished with optional release files omitted and new commit IDs after those runs;
+`45c88a0` contains the frozen config, but its current public ID is **not independent proof of
+pre-run timing**.
 Revision 2's re-freeze (`configs/frozen.yaml` written 16:31 UTC, held-out runs started
 16:34 UTC) is evidenced by file timestamps and each run's `manifest.json` hashes, **not** by a
 commit made before the run. Also, the Adult/Covertype/AG News held-out test pairs in revision 2
